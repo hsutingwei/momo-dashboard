@@ -49,6 +49,7 @@
   </div>
 </template>
 
-<script setup>
-console.log('Dashboard loaded successfully!');
-</script>
+<script setup lang="ts">
+// No API calls for now - just static content
+console.log('Dashboard page loaded successfully!');
+</script> 

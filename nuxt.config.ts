@@ -1,19 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  
-  // 啟用模組
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@pinia/nuxt',
-  ],
-  
-  // TypeScript 配置
-  typescript: {
-    strict: true,
-    typeCheck: true
-  },
   
   // 環境變數
   runtimeConfig: {
@@ -29,9 +16,6 @@ export default defineNuxtConfig({
       appName: 'Momo Dashboard'
     }
   },
-  
-  // CSS
-  css: ['~/assets/css/main.css'],
   
   // 應用程式配置
   app: {
