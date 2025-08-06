@@ -27,37 +27,49 @@
               <TableHead>Name</TableHead>
               <TableHead>Keywords</TableHead>
               <TableHead>Price</TableHead>
+              <TableHead>Product Link</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow 
-              v-for="product in filteredProducts" 
-              :key="product.id" 
+            <TableRow
+              v-for="product in filteredProducts"
+              :key="product.id"
               class="cursor-pointer hover:bg-muted/50"
             >
               <TableCell class="font-mono">{{ product.id }}</TableCell>
               <TableCell>{{ product.name }}</TableCell>
               <TableCell>
                 <div class="flex flex-wrap gap-1">
-                  <Badge 
-                    v-for="keyword in product.keywords" 
+                  <Badge
+                    v-for="keyword in product.keywords"
                     :key="keyword"
-                    variant="secondary" 
+                    variant="secondary"
                     class="text-xs"
                   >
                     {{ keyword }}
                   </Badge>
                 </div>
               </TableCell>
-              <TableCell>${{ product.price }}</TableCell>
+              <TableCell>${{ product.price || 'N/A' }}</TableCell>
               <TableCell>
-                <Badge :variant="product.is_complete ? 'default' : 'secondary'">
-                  {{ product.is_complete ? "Complete" : "Incomplete" }}
+                <a
+                  v-if="product.productLink"
+                  :href="product.productLink"
+                  target="_blank"
+                  class="text-blue-600 hover:underline text-sm"
+                >
+                  View Product
+                </a>
+                <span v-else class="text-muted-foreground text-sm">N/A</span>
+              </TableCell>
+              <TableCell>
+                <Badge :variant="product.isComplete ? 'default' : 'secondary'">
+                  {{ product.isComplete ? "Complete" : "Incomplete" }}
                 </Badge>
               </TableCell>
-              <TableCell>{{ formatDate(product.created_at) }}</TableCell>
+              <TableCell>{{ formatDate(product.createdAt) }}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -71,12 +83,13 @@ import { ref, computed, onMounted } from 'vue';
 import { Search, Download } from 'lucide-vue-next';
 
 interface Product {
-  id: string;
+  id: number;
   name: string;
   keyword: string;
-  price: number;
-  is_complete: boolean;
-  created_at: string;
+  price: number | null;
+  productLink: string | null;
+  isComplete: boolean;
+  createdAt: string;
 }
 
 interface Props {
@@ -92,18 +105,21 @@ const loading = ref(false);
 
 const filteredProducts = computed(() => {
   return products.value.filter(product => {
-    const matchesGlobalSearch = !props.searchQuery || 
+    const matchesGlobalSearch = !props.searchQuery ||
       product.name.toLowerCase().includes(props.searchQuery.toLowerCase()) ||
-      product.keyword.toLowerCase().includes(props.searchQuery.toLowerCase());
-    
+      (product.keyword && product.keyword.toLowerCase().includes(props.searchQuery.toLowerCase()));
+
     const matchesLocalSearch = !localSearch.value ||
       product.name.toLowerCase().includes(localSearch.value.toLowerCase()) ||
-      product.keyword.toLowerCase().includes(localSearch.value.toLowerCase());
-    
-    const matchesProductFilter = props.selectedProduct === 'all' || product.id === props.selectedProduct;
-    
+      (product.keyword && product.keyword.toLowerCase().includes(localSearch.value.toLowerCase()));
+
+    const matchesProductFilter = props.selectedProduct === 'all' || product.id.toString() === props.selectedProduct;
+
     return matchesGlobalSearch && matchesLocalSearch && matchesProductFilter;
-  });
+  }).map(product => ({
+    ...product,
+    keywords: product.keyword ? product.keyword.split(', ').filter(k => k.trim() !== '') : []
+  }));
 });
 
 const formatDate = (dateString: string) => {
@@ -111,16 +127,17 @@ const formatDate = (dateString: string) => {
 };
 
 const handleExportCSV = () => {
-  const headers = ['ID', 'Name', 'Keywords', 'Price', 'Complete', 'Created At'];
+  const headers = ['ID', 'Name', 'Keywords', 'Price', 'Product Link', 'Complete', 'Created At'];
   const csvContent = [
     headers.join(','),
     ...filteredProducts.value.map(product => [
       product.id,
       `"${product.name}"`,
-      `"${product.keyword}"`,
-      product.price,
-      product.is_complete,
-      new Date(product.created_at).toLocaleDateString()
+      `"${product.keyword || ''}"`,
+      product.price || '',
+      `"${product.productLink || ''}"`,
+      product.isComplete,
+      new Date(product.createdAt).toLocaleDateString()
     ].join(','))
   ].join('\n');
 
@@ -135,8 +152,8 @@ const handleExportCSV = () => {
 const loadProducts = async () => {
   loading.value = true;
   try {
-    const { data } = await $fetch('/api/products/index');
-    products.value = data.products || [];
+    const { products: fetchedProducts } = await $fetch('/api/products/index');
+    products.value = fetchedProducts || [];
   } catch (error) {
     console.error('Failed to load products:', error);
   } finally {

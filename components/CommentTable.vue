@@ -12,7 +12,7 @@
               class="pl-10 w-64"
             />
           </div>
-          <select 
+          <select
             v-model="sentimentFilter"
             class="flex h-9 px-3 py-1 rounded-md border border-input bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
@@ -33,40 +33,42 @@
           <TableHeader>
             <TableRow>
               <TableHead>Comment ID</TableHead>
-              <TableHead>Product ID</TableHead>
+              <TableHead>Product</TableHead>
+              <TableHead>Customer</TableHead>
               <TableHead>Score</TableHead>
               <TableHead>Comment</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Liked</TableHead>
-              <TableHead>Sentiment</TableHead>
+              <TableHead>Like Count</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow 
-              v-for="comment in filteredComments" 
-              :key="comment.comment_id" 
+            <TableRow
+              v-for="comment in filteredComments"
+              :key="comment.id"
               class="cursor-pointer hover:bg-muted/50"
             >
-              <TableCell class="font-mono">{{ comment.comment_id }}</TableCell>
-              <TableCell class="font-mono">{{ comment.product_id }}</TableCell>
+              <TableCell class="font-mono text-xs">{{ comment.commentId }}</TableCell>
               <TableCell>
-                <Badge variant="outline">{{ comment.score }}/5</Badge>
+                <div>
+                  <div class="font-medium">{{ comment.productName || 'Unknown Product' }}</div>
+                  <div class="text-xs text-muted-foreground">ID: {{ comment.productId }}</div>
+                </div>
+              </TableCell>
+              <TableCell>{{ comment.customerName || 'Anonymous' }}</TableCell>
+              <TableCell>
+                <Badge variant="outline">{{ comment.score || 'N/A' }}/5</Badge>
               </TableCell>
               <TableCell class="max-w-md">
-                <p class="truncate">{{ comment.comment_text }}</p>
+                <p class="truncate">{{ comment.commentText || 'No comment text' }}</p>
               </TableCell>
-              <TableCell>{{ formatDate(comment.comment_date) }}</TableCell>
+              <TableCell>{{ formatDate(comment.commentDate) }}</TableCell>
               <TableCell>
-                <ThumbsUp v-if="comment.is_like" class="h-4 w-4 text-green-600" />
+                <ThumbsUp v-if="comment.isLike" class="h-4 w-4 text-green-600" />
                 <ThumbsDown v-else class="h-4 w-4 text-red-600" />
               </TableCell>
               <TableCell>
-                <Badge :class="getSentimentBadgeClass(comment.sentiment_score)">
-                  {{ getSentimentLabel(comment.sentiment_score) }}
-                </Badge>
-                <div class="text-xs text-muted-foreground mt-1">
-                  {{ comment.sentiment_score.toFixed(2) }}
-                </div>
+                <span class="text-sm">{{ comment.likeCount || 0 }}</span>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -81,13 +83,25 @@ import { ref, computed, onMounted } from 'vue';
 import { Search, Download, ThumbsUp, ThumbsDown } from 'lucide-vue-next';
 
 interface Comment {
-  comment_id: string;
-  product_id: string;
-  score: number;
-  comment_text: string;
-  comment_date: string;
-  is_like: boolean;
-  sentiment_score: number;
+  id: number;
+  commentId: string;
+  productId: number;
+  commentText: string | null;
+  customerName: string | null;
+  commentDate: string | null;
+  goodsType: string | null;
+  isLike: boolean | null;
+  isShowLike: boolean | null;
+  likeCount: number | null;
+  replyContent: string | null;
+  replyDate: string | null;
+  score: number | null;
+  videoThumbnailImg: string | null;
+  videoUrl: string | null;
+  captureTime: string;
+  createdAt: string;
+  productName: string | null;
+  productKeyword: string | null;
 }
 
 interface Props {
@@ -104,51 +118,43 @@ const loading = ref(false);
 
 const filteredComments = computed(() => {
   return comments.value.filter(comment => {
-    const matchesGlobalSearch = !props.searchQuery || 
-      comment.comment_text.toLowerCase().includes(props.searchQuery.toLowerCase());
-    
+    const matchesGlobalSearch = !props.searchQuery ||
+      (comment.commentText && comment.commentText.toLowerCase().includes(props.searchQuery.toLowerCase()));
+
     const matchesLocalSearch = !localSearch.value ||
-      comment.comment_text.toLowerCase().includes(localSearch.value.toLowerCase());
-    
-    const matchesProductFilter = props.selectedProduct === 'all' || comment.product_id === props.selectedProduct;
-    
-    const matchesSentimentFilter = sentimentFilter.value === 'all' || 
-      (sentimentFilter.value === 'positive' && comment.sentiment_score > 0.3) ||
-      (sentimentFilter.value === 'neutral' && comment.sentiment_score >= -0.3 && comment.sentiment_score <= 0.3) ||
-      (sentimentFilter.value === 'negative' && comment.sentiment_score < -0.3);
-    
+      (comment.commentText && comment.commentText.toLowerCase().includes(localSearch.value.toLowerCase()));
+
+    const matchesProductFilter = props.selectedProduct === 'all' || comment.productId.toString() === props.selectedProduct;
+
+    const matchesSentimentFilter = sentimentFilter.value === 'all' ||
+      (sentimentFilter.value === 'positive' && comment.score && comment.score >= 4) ||
+      (sentimentFilter.value === 'neutral' && comment.score && comment.score > 2 && comment.score < 4) ||
+      (sentimentFilter.value === 'negative' && comment.score && comment.score <= 2);
+
     return matchesGlobalSearch && matchesLocalSearch && matchesProductFilter && matchesSentimentFilter;
   });
 });
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string | null) => {
+  if (!dateString) return 'N/A';
   return new Date(dateString).toLocaleDateString();
 };
 
-const getSentimentLabel = (score: number) => {
-  if (score > 0.3) return 'Positive';
-  if (score < -0.3) return 'Negative';
-  return 'Neutral';
-};
-
-const getSentimentBadgeClass = (score: number) => {
-  if (score > 0.3) return 'bg-green-100 text-green-800';
-  if (score < -0.3) return 'bg-red-100 text-red-800';
-  return 'bg-gray-100 text-gray-800';
-};
-
 const handleExportCSV = () => {
-  const headers = ['Comment ID', 'Product ID', 'Score', 'Comment', 'Date', 'Liked', 'Sentiment Score'];
+  const headers = ['Comment ID', 'Product ID', 'Product Name', 'Customer Name', 'Score', 'Comment Text', 'Comment Date', 'Is Like', 'Like Count', 'Capture Time'];
   const csvContent = [
     headers.join(','),
     ...filteredComments.value.map(comment => [
-      comment.comment_id,
-      comment.product_id,
-      comment.score,
-      `"${comment.comment_text.replace(/"/g, '""')}"`,
-      new Date(comment.comment_date).toLocaleDateString(),
-      comment.is_like,
-      comment.sentiment_score
+      comment.commentId,
+      comment.productId,
+      `"${comment.productName || ''}"`,
+      `"${comment.customerName || ''}"`,
+      comment.score || '',
+      `"${comment.commentText || ''}"`,
+      comment.commentDate ? new Date(comment.commentDate).toLocaleDateString() : '',
+      comment.isLike,
+      comment.likeCount || 0,
+      new Date(comment.captureTime).toLocaleDateString()
     ].join(','))
   ].join('\n');
 
@@ -163,8 +169,8 @@ const handleExportCSV = () => {
 const loadComments = async () => {
   loading.value = true;
   try {
-    const { data } = await $fetch('/api/comments/index');
-    comments.value = data.comments || [];
+    const { comments: fetchedComments } = await $fetch('/api/comments/index');
+    comments.value = fetchedComments || [];
   } catch (error) {
     console.error('Failed to load comments:', error);
   } finally {
