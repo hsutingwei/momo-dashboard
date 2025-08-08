@@ -41,15 +41,21 @@
                 {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
               </span>
             </th>
-            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600; color: #495057;">
-              Status
-            </th>
             <th 
               @click="$emit('sort', 'created_at')" 
               style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
             >
               Created At
               <span v-if="currentSortBy === 'created_at'" style="margin-left: 5px;">
+                {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+              </span>
+            </th>
+            <th 
+              @click="$emit('sort', 'created_at')" 
+              style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
+            >
+              Updated At
+              <span v-if="currentSortBy === 'updated_at'" style="margin-left: 5px;">
                 {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
               </span>
             </th>
@@ -63,15 +69,15 @@
             <td style="padding: 12px; color: #333;">{{ item.id }}</td>
             <td style="padding: 12px; color: #333;">
               <div style="font-weight: 500;">{{ item.name }}</div>
-              <div v-if="item.productLink" style="font-size: 0.8rem; color: #666;">
-                <a :href="item.productLink" target="_blank" style="color: #2196f3; text-decoration: none;">
+              <div v-if="item.product_link" style="font-size: 0.8rem; color: #666;">
+                <a :href="item.product_link" target="_blank" style="color: #2196f3; text-decoration: none;">
                   View Product
                 </a>
               </div>
             </td>
             <td style="padding: 12px; color: #333;">
               <span v-if="item.price" style="font-weight: 500; color: #2e7d32;">
-                ${{ item.price.toFixed(2) }}
+                ${{ item.price.toFixed(0) }}
               </span>
               <span v-else style="color: #666;">-</span>
             </td>
@@ -81,22 +87,11 @@
               </span>
               <span v-else style="color: #666;">-</span>
             </td>
-            <td style="padding: 12px;">
-              <span 
-                :style="{
-                  background: item.isComplete ? '#e8f5e8' : '#fff3e0',
-                  color: item.isComplete ? '#2e7d32' : '#f57c00',
-                  padding: '4px 8px',
-                  borderRadius: '12px',
-                  fontSize: '0.8rem',
-                  fontWeight: '500'
-                }"
-              >
-                {{ item.isComplete ? 'Complete' : 'Incomplete' }}
-              </span>
+            <td style="padding: 12px; color: #666; font-size: 0.9rem;">
+              {{ formatDate(item.created_at) }}
             </td>
             <td style="padding: 12px; color: #666; font-size: 0.9rem;">
-              {{ formatDate(item.createdAt) }}
+              {{ formatDate(item.updated_at) }}
             </td>
             <td style="padding: 12px;">
               <button 
@@ -104,12 +99,6 @@
                 style="padding: 4px 8px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-right: 5px;"
               >
                 View
-              </button>
-              <button 
-                @click="editProduct(item.id)"
-                style="padding: 4px 8px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;"
-              >
-                Edit
               </button>
             </td>
           </tr>
@@ -170,11 +159,11 @@ interface Product {
   id: number;
   name: string;
   price: number;
-  productLink: string;
+  product_link: string;
   keyword: string;
-  isComplete: boolean;
-  createdAt: string;
-  updatedAt: string;
+  is_complete: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface Props {
@@ -215,16 +204,18 @@ const visiblePages = computed(() => {
 
 // 格式化日期
 const formatDate = (dateString: string) => {
-  if (!dateString) return '-';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('zh-TW', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
+  if (!dateString) return '–'
+  const date = new Date(dateString)
+  return date.toLocaleString('zh-TW', {
+    year:   'numeric',
+    month:  '2-digit',
+    day:    '2-digit',
+    hour:   '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false    // 24 小時制
+  })
+}
 
 // 查看詳情
 const viewDetails = (id: number) => {

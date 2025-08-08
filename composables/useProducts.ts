@@ -4,11 +4,11 @@ interface Product {
   id: number;
   name: string;
   price: number;
-  productLink: string;
+  product_link: string;
   keyword: string;
-  isComplete: boolean;
-  createdAt: string;
-  updatedAt: string;
+  is_complete: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface ProductsResponse {
@@ -89,11 +89,11 @@ export function useProducts() {
         id: item.id,
         name: item.name,
         price: item.price,
-        productLink: item.productLink,
+        product_link: item.product_link,
         keyword: item.keyword,
-        isComplete: item.isComplete,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt
+        is_complete: item.is_complete,
+        created_at: item.created_at,
+        updated_at: item.updated_at
       }));
       
       total.value = data.total;
