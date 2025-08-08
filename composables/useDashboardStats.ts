@@ -8,6 +8,7 @@ interface DashboardStats {
 }
 
 export function useDashboardStats() {
+  console.log("useDashboardStats")
   const stats = ref<DashboardStats>({
     totalProducts: 0,
     totalComments: 0,

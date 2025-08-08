@@ -22,9 +22,11 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
           <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Total Products</h3>
-            <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ stats.totalProducts.toLocaleString() }}</p>
+            <NuxtLink to="/products">
+              <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ stats.totalProducts.toLocaleString() }}</p>
+            </NuxtLink>
             <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">+12% from last month</p>
-          </div>
+          </div>  
 
           <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Total Comments</h3>
@@ -67,7 +69,5 @@
 </template>
 
 <script setup lang="ts">
-import { useDashboardStats } from '../composables/useDashboardStats';
-
 const { stats, error, refresh, pending } = useDashboardStats();
 </script> 

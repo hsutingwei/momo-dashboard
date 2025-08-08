@@ -63,6 +63,7 @@ export function useProducts() {
 
   // 獲取產品列表
   const fetchProducts = async (newFilters?: Partial<ProductsFilters>) => {
+    console.log("fetchProducts")
     if (newFilters) {
       filters.value = { ...filters.value, ...newFilters };
     }
@@ -71,8 +72,12 @@ export function useProducts() {
     error.value = null;
 
     try {
+      console.log("useProducts")
       const queryString = buildQueryString(filters.value);
+      console.log(queryString)
       const response = await fetch(`/api/products?${queryString}`);
+
+      console.log(response)
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -155,6 +160,8 @@ export function useProducts() {
     };
     fetchProducts();
   };
+
+  // console.log(products)
 
   return {
     // 數據

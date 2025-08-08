@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
       page = '1'
     } = getQuery(event);
 
-    let sql = 'SELECT * FROM products WHERE 1=1';
+    let sql = 'select id, name, price::float AS price, product_link, keyword, created_at, updated_at from products WHERE 1=1';
     const params: any[] = [];
 
     // 篩選條件
@@ -69,6 +69,8 @@ export default defineEventHandler(async (event) => {
     const rows = await query<Product>(sql, params);
     const currentPage = parseInt(page as string) || 1;
     const totalPages = Math.ceil(total / limitNum);
+
+    // console.log(rows)
 
     return {
       items: rows,
