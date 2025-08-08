@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
       keyword,
       sortBy = 'id', 
       sortOrder = 'asc', 
-      limit = '20', 
+      limit = '10', 
       offset = '0',
       page = '1'
     } = getQuery(event);
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
     sql += ` ORDER BY ${field} ${order}`;
 
     // 分頁
-    const limitNum = parseInt(limit as string) || 20;
+    const limitNum = parseInt(limit as string) || 10;
     const offsetNum = parseInt(offset as string) || 0;
     sql += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
     params.push(limitNum, offsetNum);

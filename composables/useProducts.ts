@@ -6,7 +6,7 @@ export function useProducts() {
   const total = ref(0);
   const currentPage = ref(1);
   const totalPages = ref(0);
-  const limit = ref(20);
+  const limit = ref(10);
   const error = ref<string | null>(null);
   const pending = ref(false);
 
@@ -15,7 +15,7 @@ export function useProducts() {
     sortBy: 'id',
     sortOrder: 'asc',
     page: 1,
-    limit: 20
+    limit: 10
   });
 
   // 構建查詢字串
@@ -128,7 +128,7 @@ export function useProducts() {
       sortBy: 'id',
       sortOrder: 'asc',
       page: 1,
-      limit: 20
+      limit: 10
     };
     fetchProducts();
   };
