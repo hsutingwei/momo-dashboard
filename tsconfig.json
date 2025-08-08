@@ -1,8 +1,12 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "strict": true,
-    "skipLibCheck": true,
-    "types": ["@nuxt/types", "@types/node"]
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./*"],
+      "types/*": ["./types/*"],
+      "utils/*": ["./utils/*"]
+    }
   }
 }

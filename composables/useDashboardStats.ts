@@ -1,14 +1,7 @@
 import { ref, onMounted } from 'vue';
-
-interface DashboardStats {
-  totalProducts: number;
-  totalComments: number;
-  uniqueKeywords: number;
-  productsWithSalesChanges: number;
-}
+import type { DashboardStats } from '~/types';
 
 export function useDashboardStats() {
-  console.log("useDashboardStats")
   const stats = ref<DashboardStats>({
     totalProducts: 0,
     totalComments: 0,

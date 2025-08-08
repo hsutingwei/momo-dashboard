@@ -1,23 +1,5 @@
 import { query } from '../utils/db';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  product_link: string;
-  keyword: string;
-  is_complete: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-interface ProductsResponse {
-  items: Product[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+import type { Product, ProductsResponse } from '~/types';
 
 export default defineEventHandler(async (event) => {
   try {
@@ -50,7 +32,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // 計算總筆數
-    const countSql = sql.replace('SELECT *', 'SELECT COUNT(*) as total');
+    const countSql = sql.replace('select id, name, price::float AS price, product_link, keyword, created_at, updated_at', 'SELECT COUNT(*) as total');
     const countResult = await query<{ total: number }>(countSql, params);
     const total = countResult[0]?.total || 0;
 
@@ -70,7 +52,7 @@ export default defineEventHandler(async (event) => {
     const currentPage = parseInt(page as string) || 1;
     const totalPages = Math.ceil(total / limitNum);
 
-    // console.log(rows)
+    // console.log(total)
 
     return {
       items: rows,

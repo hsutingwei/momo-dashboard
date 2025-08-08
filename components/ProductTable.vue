@@ -51,7 +51,7 @@
               </span>
             </th>
             <th 
-              @click="$emit('sort', 'created_at')" 
+              @click="$emit('sort', 'updated_at')" 
               style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
             >
               Updated At
@@ -77,7 +77,7 @@
             </td>
             <td style="padding: 12px; color: #333;">
               <span v-if="item.price" style="font-weight: 500; color: #2e7d32;">
-                ${{ item.price.toFixed(0) }}
+                {{ formatPrice(item.price) }}
               </span>
               <span v-else style="color: #666;">-</span>
             </td>
@@ -154,17 +154,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  product_link: string;
-  keyword: string;
-  is_complete: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import type { Product } from '~/types';
+import { formatDate, formatPrice } from '~/utils/global';
 
 interface Props {
   items: Product[];
@@ -201,21 +192,6 @@ const visiblePages = computed(() => {
   
   return pages;
 });
-
-// 格式化日期
-const formatDate = (dateString: string) => {
-  if (!dateString) return '–'
-  const date = new Date(dateString)
-  return date.toLocaleString('zh-TW', {
-    year:   'numeric',
-    month:  '2-digit',
-    day:    '2-digit',
-    hour:   '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false    // 24 小時制
-  })
-}
 
 // 查看詳情
 const viewDetails = (id: number) => {

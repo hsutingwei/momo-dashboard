@@ -1,33 +1,5 @@
 import { ref, computed } from 'vue';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  product_link: string;
-  keyword: string;
-  is_complete: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-interface ProductsResponse {
-  items: Product[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-interface ProductsFilters {
-  productId?: string;
-  name?: string;
-  keyword?: string;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-  page?: number;
-  limit?: number;
-}
+import type { Product, ProductsResponse, ProductsFilters } from '~/types';
 
 export function useProducts() {
   const products = ref<Product[]>([]);
@@ -77,7 +49,7 @@ export function useProducts() {
       console.log(queryString)
       const response = await fetch(`/api/products?${queryString}`);
 
-      console.log(response)
+      // console.log(response)
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
