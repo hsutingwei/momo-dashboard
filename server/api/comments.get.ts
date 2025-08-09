@@ -2,7 +2,6 @@ import { query } from '../utils/db';
 import type { Comment, CommentsResponse } from '~/types';
 
 export default defineEventHandler(async (event) => {
-  console.log("comments.get")
   try {
     const { 
       product_id, 
