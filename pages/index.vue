@@ -33,7 +33,9 @@
   
           <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Total Comments</h3>
-            <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ formatNumber(stats.totalComments) }}</p>
+            <NuxtLink to="/comments">
+              <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ formatNumber(stats.totalComments) }}</p>
+            </NuxtLink>
             <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">+23% from last month</p>
           </div>
   
