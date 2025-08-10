@@ -106,19 +106,6 @@
             </p>
           </div>
           <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-500">狀態</label>
-            <p class="text-gray-900">
-              <span :class="[
-                'px-2 py-1 rounded-full text-xs font-medium',
-                product.is_complete 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-yellow-100 text-yellow-800'
-              ]">
-                {{ product.is_complete ? '已完成' : '進行中' }}
-              </span>
-            </p>
-          </div>
-          <div class="space-y-2">
             <label class="text-sm font-medium text-gray-500">建立日期</label>
             <p class="text-gray-900">{{ formatDate(product.created_at) }}</p>
           </div>
