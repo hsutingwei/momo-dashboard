@@ -81,8 +81,13 @@
                   {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
                 </span>
               </th>
-              <th class="table-header cursor-default">
+              <th 
+                @click="$emit('sort', 'reply_content')" 
+                class="table-header cursor-default">
                 Reply Content
+                <span v-if="currentSortBy === 'reply_content'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
               </th>
               <th 
                 @click="$emit('sort', 'reply_date')" 
@@ -102,8 +107,13 @@
                   {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
                 </span>
               </th>
-              <th class="table-header cursor-default">
+              <th 
+                @click="$emit('sort', 'video_url')" 
+                class="table-header cursor-default">
                 Video
+                <span v-if="currentSortBy === 'video_url'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
               </th>
               <th 
                 @click="$emit('sort', 'capture_time')" 
@@ -131,7 +141,7 @@
               <td class="table-cell">{{ item.comment_id }}</td>
               <td class="table-cell">{{ item.product_id }}</td>
               <td class="table-cell">
-                <div @click="showFullText(item.comment_text)" class="cursor-pointer max-w-xs">
+                <div class="max-w-xs">
                   {{ truncateText(item.comment_text, 20) }}
                 </div>
               </td>
