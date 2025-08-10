@@ -73,8 +73,10 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div class="card">
             <h3 class="text-sm font-medium text-gray-500 mb-3">Total Comments</h3>
-            <p class="text-3xl font-bold text-gray-900">{{ formatNumber(commentStats.totalComments) }}</p>
-            <p class="text-xs text-gray-500 mt-2">Based on current filters</p>
+            <div class="h-full w-full flex flex-col items-center justify-center">
+              <p class="text-3xl font-bold text-gray-900">{{ formatNumber(commentStats.totalComments) }}</p>
+              <p class="text-xs text-gray-500 mt-2">Based on current filters</p>
+            </div>
           </div>
 
           <div class="card">
