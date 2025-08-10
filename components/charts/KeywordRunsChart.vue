@@ -171,7 +171,6 @@ const chartOption = computed(() => {
               Number(d.aligned_index) === param.dataIndex + 1
             );
             const timeLabel = item ? item.run_ts_label : '';
-            console.log(item)
             result += `${param.marker}${param.seriesName}: ${formatNumber(param.value)} (${timeLabel})<br/>`;
           }
         });

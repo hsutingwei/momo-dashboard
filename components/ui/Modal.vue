@@ -18,7 +18,10 @@
         <!-- Modal Container -->
         <div class="flex min-h-full items-center justify-center p-4">
           <div 
-            class="relative bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+            :class="[
+              'relative bg-white rounded-lg shadow-xl w-full max-h-[90vh] overflow-hidden',
+              props.class || 'max-w-4xl'
+            ]"
             @click.stop
           >
             <!-- Header -->
@@ -61,6 +64,7 @@ interface Props {
   title?: string;
   closeOnBackdrop?: boolean;
   closeOnEscape?: boolean;
+  class?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

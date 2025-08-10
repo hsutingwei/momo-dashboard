@@ -70,7 +70,7 @@ export function useComments() {
         created_at: item.created_at
       }));
       
-      total.value = data.total;
+      total.value = Number(data.total);
       currentPage.value = data.page;
       totalPages.value = data.totalPages;
       limit.value = data.limit;
