@@ -121,7 +121,7 @@ const chartOption = computed(() => {
         const param = params[0];
         const item = data.value[param.dataIndex];
         if (!item) return '';
-        return `${item.run_ts_label}: ${param.value} 則評論`;
+        return `${item.run_ts_label}: ${formatNumber(param.value)} 則評論`;
       }
     },
     grid: {

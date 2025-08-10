@@ -172,7 +172,7 @@ const chartOption = computed(() => {
             );
             const timeLabel = item ? item.run_ts_label : '';
             console.log(item)
-            result += `${param.marker}${param.seriesName}: ${param.value} (${timeLabel})<br/>`;
+            result += `${param.marker}${param.seriesName}: ${formatNumber(param.value)} (${timeLabel})<br/>`;
           }
         });
         return result;
