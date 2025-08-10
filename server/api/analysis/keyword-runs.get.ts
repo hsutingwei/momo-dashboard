@@ -1,35 +1,37 @@
-import { query } from '~/server/utils/db';
+import { query } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
   try {
-    const queryParams = getQuery(event);
-    const { keywords, from, to } = queryParams;
+    const { keywords, from, to } = getQuery(event)
 
-    if (!keywords) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'keywords parameter is required'
-      });
+    // 解析 keywords：空字串或未提供 => 取全部
+    const raw = (keywords ?? '').toString().trim()
+    const keywordArray = raw
+      ? raw.split(',').map(k => k.trim()).filter(Boolean)
+      : []  // 空陣列 => 不加 keyword 條件
+
+    // 動態條件與參數
+    const conditions: string[] = []
+    const params: any[] = []
+    let idx = 1
+
+    // keywords 條件（可空）
+    if (keywordArray.length > 0) {
+      conditions.push(`p.keyword = ANY($${idx}::text[])`)
+      params.push(keywordArray)
+      idx++
     }
 
-    const keywordArray = (keywords as string).split(',').map(k => k.trim());
-    
-    // 建立 WHERE 條件
-    let whereConditions = [`p.keyword IN (${keywordArray.map((_, i) => `$${i + 1}`).join(',')})`];
-    const params = [...keywordArray];
-    let paramIndex = keywordArray.length + 1;
-    
     if (from) {
-      whereConditions.push(`pc.capture_time >= $${paramIndex++}`);
-      params.push(from as string);
+      conditions.push(`pc.capture_time >= $${idx++}`)
+      params.push(from as string)
     }
-    
     if (to) {
-      whereConditions.push(`pc.capture_time <= $${paramIndex++}`);
-      params.push(to as string);
+      conditions.push(`pc.capture_time <= $${idx++}`)
+      params.push(to as string)
     }
 
-    const whereClause = whereConditions.join(' AND ');
+    const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
 
     const sql = `
       WITH base AS (
@@ -39,7 +41,7 @@ export default defineEventHandler(async (event) => {
           COUNT(*) AS comment_count
         FROM product_comments pc
         JOIN products p ON p.id = pc.product_id
-        WHERE ${whereClause}
+        ${whereClause}
         GROUP BY p.keyword, pc.capture_time
       ),
       seq AS (
@@ -78,21 +80,21 @@ export default defineEventHandler(async (event) => {
         max_runs
       FROM aligned
       ORDER BY aligned_index, keyword;
-    `;
+    `
 
-    const result = await query<any>(sql, params);
+    const result = await query<any>(sql, params)
+    const maxRuns = result.reduce((m, r) => Math.max(m, r?.max_runs ?? 0), 0)
 
     return {
       success: true,
       data: result,
-      max_runs: result.length > 0 ? result[0].max_runs : 0
-    };
-
+      max_runs: maxRuns,
+    }
   } catch (error) {
-    console.error('Error in keyword-runs API:', error);
+    console.error('Error in keyword-runs API:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Internal server error'
-    });
+      statusMessage: 'Internal server error',
+    })
   }
-}); 
+})

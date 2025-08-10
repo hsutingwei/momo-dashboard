@@ -69,49 +69,8 @@
           </div>
         </div>
 
-        <!-- Statistics Summary -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div class="card">
-            <h3 class="text-sm font-medium text-gray-500 mb-3">Total Comments</h3>
-            <div class="h-full w-full flex flex-col items-center justify-center">
-              <p class="text-3xl font-bold text-gray-900">{{ formatNumber(commentStats.totalComments) }}</p>
-              <p class="text-xs text-gray-500 mt-2">Based on current filters</p>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="text-sm font-medium text-gray-500 mb-3">Keyword Runs</h3>
-            <div v-if="commentStats.keywordRuns && commentStats.keywordRuns.length > 0" class="h-48 flex items-center justify-center">
-              <p class="text-2xl font-bold text-gray-900">{{ commentStats.keywordRuns.length }} data points</p>
-            </div>
-            <div v-else class="h-48 flex items-center justify-center">
-              <p class="text-gray-500">No data available</p>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="text-sm font-medium text-gray-500 mb-3">Product Runs</h3>
-            <div v-if="commentStats.productRuns && commentStats.productRuns.length > 0" class="h-48 flex items-center justify-center">
-              <p class="text-2xl font-bold text-gray-900">{{ commentStats.productRuns.length }} data points</p>
-            </div>
-            <div v-else class="h-48 flex items-center justify-center">
-              <p class="text-gray-500">No data available</p>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="text-sm font-medium text-gray-500 mb-3">Sales Changes</h3>
-            <div v-if="commentStats.salesChanges && commentStats.salesChanges.length > 0" class="h-48 flex items-center justify-center">
-              <p class="text-2xl font-bold text-gray-900">{{ commentStats.salesChanges.length }} data points</p>
-            </div>
-            <div v-else class="h-48 flex items-center justify-center">
-              <p class="text-gray-500">No data available</p>
-            </div>
-          </div>
-        </div>
-
         <!-- Charts Section -->
-        <div class="space-y-8 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <!-- 第一張圖：總評論數 -->
           <div class="card">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">總評論數統計</h3>
@@ -124,7 +83,7 @@
           <!-- 第二張圖：關鍵字比較或產品趨勢 -->
           <KeywordRunsChart 
             v-if="!searchFilters.productId"
-            :keywords="'益生菌,口罩'"
+            :keywords="''"
             :from="searchFilters.captureTime"
           />
           <ProductRunsChart 

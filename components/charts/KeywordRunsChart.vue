@@ -69,7 +69,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  keywords: '益生菌,口罩'
+  keywords: ''
 });
 
 const data = ref<KeywordRunData[]>([]);
@@ -78,7 +78,6 @@ const error = ref<string | null>(null);
 
 // 獲取數據
 const fetchData = async () => {
-  if (!props.keywords) return;
   
   pending.value = true;
   error.value = null;
@@ -90,7 +89,6 @@ const fetchData = async () => {
     
     if (props.from) params.append('from', props.from);
     if (props.to) params.append('to', props.to);
-    
     const response = await $fetch(`/api/analysis/keyword-runs?${params}`) as any;
     data.value = response.data || [];
   } catch (err: any) {
@@ -170,9 +168,10 @@ const chartOption = computed(() => {
             // 找到對應的時間標籤
             const item = data.value.find(d => 
               d.keyword === param.seriesName && 
-              d.aligned_index === param.dataIndex + 1
+              Number(d.aligned_index) === param.dataIndex + 1
             );
             const timeLabel = item ? item.run_ts_label : '';
+            console.log(item)
             result += `${param.marker}${param.seriesName}: ${param.value} (${timeLabel})<br/>`;
           }
         });
