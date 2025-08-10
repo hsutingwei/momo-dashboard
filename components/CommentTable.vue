@@ -136,7 +136,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item.id" class="border-b border-gray-100 hover:bg-gray-50">
+            <tr 
+              v-for="item in items" 
+              :key="item.id" 
+              class="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+              @click="openCommentDetail(item)"
+            >
               <td class="table-cell">{{ item.id }}</td>
               <td class="table-cell">{{ item.comment_id }}</td>
               <td class="table-cell">{{ item.product_id }}</td>
@@ -239,49 +244,33 @@
     </div>
 
     <!-- Image Modal -->
-    <div v-if="showImageModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center p-4">
-      <div class="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto">
-        <div class="flex justify-between items-center p-6 border-b border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-900">Images ({{ currentImages.length }})</h3>
-          <button @click="closeImageModal" class="btn-danger">
-            Close
-          </button>
-        </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <img 
-              v-for="(url, index) in currentImages" 
-              :key="index" 
-              :src="url" 
-              :alt="`Image ${index + 1}`"
-              class="w-full h-auto rounded-lg shadow-md"
-              @error="handleImageError"
-            />
-          </div>
+    <Modal v-model="showImageModal" title="Images">
+      <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <img 
+            v-for="(url, index) in currentImages" 
+            :key="index" 
+            :src="url" 
+            :alt="`Image ${index + 1}`"
+            class="w-full h-auto rounded-lg shadow-md"
+            @error="handleImageError"
+          />
         </div>
       </div>
-    </div>
+    </Modal>
 
     <!-- Video Modal -->
-    <div v-if="showVideoModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center p-4">
-      <div class="bg-white rounded-lg max-w-4xl max-h-[90vh]">
-        <div class="flex justify-between items-center p-6 border-b border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-900">Video</h3>
-          <button @click="closeVideoModal" class="btn-danger">
-            Close
-          </button>
-        </div>
-        <div class="p-6">
-          <video 
-            :src="currentVideoUrl" 
-            controls 
-            class="w-full max-h-[60vh] rounded-lg"
-          >
-            Your browser does not support the video tag.
-          </video>
-        </div>
+    <Modal v-model="showVideoModal" title="Video">
+      <div class="p-6">
+        <video 
+          :src="currentVideoUrl" 
+          controls 
+          class="w-full max-h-[60vh] rounded-lg"
+        >
+          Your browser does not support the video tag.
+        </video>
       </div>
-    </div>
+    </Modal>
   </div>
 </template>
 
@@ -289,6 +278,7 @@
 import { computed, ref } from 'vue';
 import type { Comment } from '~/types';
 import { formatDate, formatNumber, truncateText } from '~/utils/global';
+import Modal from '~/components/ui/Modal.vue';
 
 interface Props {
   items: Comment[];
@@ -308,6 +298,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   sort: [field: string];
   'page-change': [page: number];
+  'open-detail': [comment: Comment];
 }>();
 
 // Modal states
@@ -363,5 +354,10 @@ const closeVideoModal = () => {
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement;
   img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIEVycm9yPC90ZXh0Pjwvc3ZnPg==';
+};
+
+// 開啟評論詳細資訊
+const openCommentDetail = (comment: Comment) => {
+  emit('open-detail', comment);
 };
 </script> 

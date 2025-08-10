@@ -108,6 +108,14 @@
           :current-sort-order="filters.sortOrder"
           @sort="handleSort"
           @page-change="handlePageChange"
+          @open-detail="openCommentDetail"
+        />
+
+        <!-- Comment Detail Modal -->
+        <CommentDetailModal 
+          v-if="selectedComment"
+          v-model="showCommentModal"
+          :comment="selectedComment"
         />
 
         <!-- Summary -->
@@ -131,9 +139,11 @@ import { useRoute } from 'vue-router';
 import { useComments } from '../composables/useComments';
 import { useCommentStats } from '../composables/useCommentStats';
 import { formatNumber } from '~/utils/global';
+import type { Comment } from '~/types';
 import KeywordRunsChart from '~/components/charts/KeywordRunsChart.vue';
 import ProductRunsChart from '~/components/charts/ProductRunsChart.vue';
 import SalesChangesChart from '~/components/charts/SalesChangesChart.vue';
+import CommentDetailModal from '~/components/CommentDetailModal.vue';
 
 const route = useRoute();
 const { 
@@ -187,6 +197,16 @@ const handleSort = (field: string) => {
 // 處理分頁
 const handlePageChange = (page: number) => {
   goToPage(page);
+};
+
+// Modal states
+const showCommentModal = ref(false);
+const selectedComment = ref<Comment | null>(null);
+
+// 開啟評論詳細資訊
+const openCommentDetail = (comment: Comment) => {
+  selectedComment.value = comment;
+  showCommentModal.value = true;
 };
 
 // 從 URL 參數初始化
