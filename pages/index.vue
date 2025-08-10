@@ -1,20 +1,20 @@
 <template>
-  <div style="min-height: 100vh; background-color: #f5f5f5; padding: 20px; font-family: Arial, sans-serif;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-      <h1 style="color: #333; font-size: 2rem; margin-bottom: 20px;">Momo Dashboard</h1>
+  <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Momo Dashboard</h1>
       
       <!-- Loading State -->
-      <div v-if="pending" style="text-align: center; padding: 40px;">
-        <p style="color: #666;">Loading dashboard data...</p>
+      <div v-if="pending" class="text-center py-16">
+        <p class="text-gray-600">Loading dashboard data...</p>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" style="background: #fee; border: 1px solid #fcc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <h3 style="color: #c33; margin: 0 0 10px 0;">Error Loading Data</h3>
-        <p style="color: #666; margin: 0;">{{ error }}</p>
+      <div v-else-if="error" class="bg-red-50 border border-red-200 p-6 rounded-lg mb-6">
+        <h3 class="text-red-800 font-semibold mb-3">Error Loading Data</h3>
+        <p class="text-gray-600 mb-4">{{ error }}</p>
         <button 
           @click="() => refresh()" 
-          style="margin-top: 10px; padding: 8px 16px; background: #c33; color: white; border: none; border-radius: 4px; cursor: pointer;"
+          class="btn-danger"
         >
           Retry
         </button>
@@ -22,51 +22,65 @@
 
       <!-- Dashboard Content -->
       <div v-else>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Total Products</h3>
-            <NuxtLink to="/products">
-              <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ formatNumber(stats.totalProducts) }}</p>
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Total Products</h3>
+            <NuxtLink to="/products" class="block">
+              <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.totalProducts) }}</p>
             </NuxtLink>
-            <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">+12% from last month</p>
+            <p class="text-xs text-gray-500 mt-2">+12% from last month</p>
           </div>
   
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Total Comments</h3>
-            <NuxtLink to="/comments">
-              <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ formatNumber(stats.totalComments) }}</p>
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Total Comments</h3>
+            <NuxtLink to="/comments" class="block">
+              <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.totalComments) }}</p>
             </NuxtLink>
-            <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">+23% from last month</p>
+            <p class="text-xs text-gray-500 mt-2">+23% from last month</p>
           </div>
   
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Unique Keywords</h3>
-            <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ formatNumber(stats.uniqueKeywords) }}</p>
-            <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">+5% from last month</p>
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Unique Keywords</h3>
+            <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.uniqueKeywords) }}</p>
+            <p class="text-xs text-gray-500 mt-2">+5% from last month</p>
           </div>
   
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Sales Changes</h3>
-            <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ formatNumber(stats.productsWithSalesChanges) }}</p>
-            <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">Products with changes</p>
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Sales Changes</h3>
+            <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.productsWithSalesChanges) }}</p>
+            <p class="text-xs text-gray-500 mt-2">Products with changes</p>
           </div>
         </div>
   
-        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="color: #333; font-size: 1.5rem; margin: 0 0 15px 0;">Dashboard Status</h2>
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <p style="margin: 0;"><strong>Server Status:</strong> <span style="color: #22c55e;">Running</span></p>
-            <p style="margin: 0;"><strong>Database Connection:</strong> <span style="color: #22c55e;">Connected</span></p>
-            <p style="margin: 0;"><strong>API Endpoints:</strong> <span style="color: #22c55e;">Available</span></p>
+        <!-- Status Card -->
+        <div class="card mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Dashboard Status</h2>
+          <div class="space-y-3">
+            <p class="flex items-center">
+              <span class="font-medium mr-2">Server Status:</span>
+              <span class="text-green-600 font-medium">Running</span>
+            </p>
+            <p class="flex items-center">
+              <span class="font-medium mr-2">Database Connection:</span>
+              <span class="text-green-600 font-medium">Connected</span>
+            </p>
+            <p class="flex items-center">
+              <span class="font-medium mr-2">API Endpoints:</span>
+              <span class="text-green-600 font-medium">Available</span>
+            </p>
           </div>
         </div>
   
-        <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
-          <h3 style="margin: 0 0 10px 0; color: #1976d2;">Success!</h3>
-          <p style="margin: 5px 0; color: #333;">✅ Dashboard is now working!</p>
-          <p style="margin: 5px 0; color: #333;">✅ Nuxt 4.0.1 is running correctly</p>
-          <p style="margin: 5px 0; color: #333;">✅ API data is loading: {{ !pending ? 'Yes' : 'No' }}</p>
-          <p style="margin: 5px 0; color: #666;">Data from Database: Total Products = {{ formatNumber(stats.totalProducts) }}, Total Comments = {{ formatNumber(stats.totalComments) }}, Unique Keywords = {{ formatNumber(stats.uniqueKeywords) }}</p>
+        <!-- Success Message -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
+          <h3 class="text-blue-800 font-semibold mb-3">Success!</h3>
+          <div class="space-y-2">
+            <p class="text-gray-800">✅ Dashboard is now working!</p>
+            <p class="text-gray-800">✅ Nuxt 4.0.1 is running correctly</p>
+            <p class="text-gray-800">✅ API data is loading: {{ !pending ? 'Yes' : 'No' }}</p>
+            <p class="text-gray-600 text-sm">Data from Database: Total Products = {{ formatNumber(stats.totalProducts) }}, Total Comments = {{ formatNumber(stats.totalComments) }}, Unique Keywords = {{ formatNumber(stats.uniqueKeywords) }}</p>
+          </div>
         </div>
       </div>
     </div>

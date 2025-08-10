@@ -28,7 +28,7 @@
 
 - **前端框架**: Nuxt 3
 - **程式語言**: TypeScript
-- **樣式框架**: Tailwind CSS
+- **樣式框架**: Tailwind CSS v4
 - **狀態管理**: Pinia
 - **資料庫**: PostgreSQL
 - **ORM**: Drizzle ORM
@@ -53,6 +53,13 @@ cd momo_dashboard
 ```bash
 pnpm install
 ```
+
+### 2.1. Tailwind CSS 配置 (已預配置)
+專案已預先配置 Tailwind CSS v4，包含：
+- 自定義組件類別 (按鈕、卡片、輸入框等)
+- 響應式設計支援
+- 顏色系統配置
+- PostCSS 整合
 
 ### 3. 設置環境變數
 建立 `.env` 文件：
@@ -87,6 +94,7 @@ momo_dashboard/
 ├── app.vue                 # 主應用程式
 ├── components/             # Vue 組件
 │   ├── ui/                # 基礎 UI 組件
+│   ├── Navigation.vue     # 響應式導航組件
 │   ├── DashboardHeader.vue
 │   ├── KPICard.vue
 │   ├── FilterPanel.vue
@@ -105,7 +113,9 @@ momo_dashboard/
 │       └── database.ts
 ├── assets/               # 靜態資源
 │   └── css/
-│       └── main.css
+│       └── tailwind.css  # Tailwind CSS 入口文件
+├── tailwind.config.js    # Tailwind CSS 配置
+├── nuxt.config.ts        # Nuxt 配置 (包含 PostCSS)
 └── FIGMA-UI/            # 原始設計檔案
 ```
 
@@ -147,6 +157,21 @@ momo_dashboard/
 - 遵循設計系統的顏色和間距
 - 支援響應式設計
 
+#### 自定義組件類別
+專案定義了以下自定義類別，可直接使用：
+- `.btn-primary`, `.btn-secondary`, `.btn-danger`: 按鈕樣式
+- `.card`: 卡片容器
+- `.input-field`: 輸入框樣式
+- `.table-header`, `.table-cell`: 表格樣式
+- `.badge`, `.badge-primary`, `.badge-success`, `.badge-warning`, `.badge-danger`: 徽章樣式
+
+#### 響應式設計
+使用 Tailwind CSS 的響應式前綴：
+- `sm:` (640px+): 平板設備
+- `md:` (768px+): 小型桌面
+- `lg:` (1024px+): 桌面設備
+- `xl:` (1280px+): 大型桌面
+
 ### 資料庫操作
 - 使用 Drizzle ORM 進行資料庫操作
 - 在 `server/database/schema.ts` 定義 schema
@@ -160,6 +185,23 @@ momo_dashboard/
 - [ ] 實作即時數據更新
 - [ ] 新增用戶權限管理
 - [ ] 優化性能和分析功能
+
+## 🎯 Tailwind CSS 遷移完成
+
+### ✅ 已完成的工作
+- [x] 從內聯樣式遷移到 Tailwind CSS v4
+- [x] 實現響應式設計 (RWD)
+- [x] 創建自定義組件類別
+- [x] 配置 PostCSS 和 Nuxt 整合
+- [x] 解決 Tailwind CSS v4 兼容性問題
+- [x] 添加響應式導航組件
+- [x] 創建測試頁面 (`/test`)
+
+### 🔧 技術細節
+- **Tailwind CSS v4**: 使用最新的 v4 版本
+- **PostCSS 配置**: 整合到 `nuxt.config.ts`
+- **自定義樣式**: 使用標準 CSS 而非 `@apply` 指令
+- **響應式設計**: 支援所有設備尺寸
 
 ## 🤝 貢獻指南
 

@@ -1,135 +1,134 @@
 <template>
   <div>
     <!-- Products Table -->
-    <div style="background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
-      <table style="width: 100%; border-collapse: collapse;">
-        <thead style="background-color: #f8f9fa;">
-          <tr>
-            <th 
-              @click="$emit('sort', 'id')" 
-              style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
-            >
-              ID
-              <span v-if="currentSortBy === 'id'" style="margin-left: 5px;">
-                {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
-              </span>
-            </th>
-            <th 
-              @click="$emit('sort', 'name')" 
-              style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
-            >
-              Name
-              <span v-if="currentSortBy === 'name'" style="margin-left: 5px;">
-                {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
-              </span>
-            </th>
-            <th 
-              @click="$emit('sort', 'price')" 
-              style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
-            >
-              Price
-              <span v-if="currentSortBy === 'price'" style="margin-left: 5px;">
-                {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
-              </span>
-            </th>
-            <th 
-              @click="$emit('sort', 'keyword')" 
-              style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
-            >
-              Keyword
-              <span v-if="currentSortBy === 'keyword'" style="margin-left: 5px;">
-                {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
-              </span>
-            </th>
-            <th 
-              @click="$emit('sort', 'created_at')" 
-              style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
-            >
-              Created At
-              <span v-if="currentSortBy === 'created_at'" style="margin-left: 5px;">
-                {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
-              </span>
-            </th>
-            <th 
-              @click="$emit('sort', 'updated_at')" 
-              style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; cursor: pointer; font-weight: 600; color: #495057;"
-            >
-              Updated At
-              <span v-if="currentSortBy === 'updated_at'" style="margin-left: 5px;">
-                {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
-              </span>
-            </th>
-            <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-weight: 600; color: #495057;">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in items" :key="item.id" style="border-bottom: 1px solid #f1f3f4;">
-            <td style="padding: 12px; color: #333;">{{ item.id }}</td>
-            <td style="padding: 12px; color: #333;">
-              <div style="font-weight: 500;">{{ item.name }}</div>
-              <div v-if="item.product_link" style="font-size: 0.8rem; color: #666;">
-                <a :href="item.product_link" target="_blank" style="color: #2196f3; text-decoration: none;">
-                  View Product
-                </a>
-              </div>
-            </td>
-            <td style="padding: 12px; color: #333;">
-              <span v-if="item.price" style="font-weight: 500; color: #2e7d32;">
-                {{ formatPrice(item.price) }}
-              </span>
-              <span v-else style="color: #666;">-</span>
-            </td>
-            <td style="padding: 12px; color: #333;">
-              <span v-if="item.keyword" style="background: #e3f2fd; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">
-                {{ item.keyword }}
-              </span>
-              <span v-else style="color: #666;">-</span>
-            </td>
-            <td style="padding: 12px; color: #666; font-size: 0.9rem;">
-              {{ formatDate(item.created_at) }}
-            </td>
-            <td style="padding: 12px; color: #666; font-size: 0.9rem;">
-              {{ formatDate(item.updated_at) }}
-            </td>
-            <td style="padding: 12px;">
-              <button 
-                @click="viewDetails(item.id)"
-                style="padding: 4px 8px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-right: 5px;"
+    <div class="bg-white rounded-lg shadow-soft overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead class="bg-gray-50">
+            <tr>
+              <th 
+                @click="$emit('sort', 'id')" 
+                class="table-header"
               >
-                View
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                ID
+                <span v-if="currentSortBy === 'id'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                @click="$emit('sort', 'name')" 
+                class="table-header"
+              >
+                Name
+                <span v-if="currentSortBy === 'name'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                @click="$emit('sort', 'price')" 
+                class="table-header"
+              >
+                Price
+                <span v-if="currentSortBy === 'price'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                @click="$emit('sort', 'keyword')" 
+                class="table-header"
+              >
+                Keyword
+                <span v-if="currentSortBy === 'keyword'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                @click="$emit('sort', 'created_at')" 
+                class="table-header"
+              >
+                Created At
+                <span v-if="currentSortBy === 'created_at'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                @click="$emit('sort', 'updated_at')" 
+                class="table-header"
+              >
+                Updated At
+                <span v-if="currentSortBy === 'updated_at'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th class="table-header cursor-default">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in items" :key="item.id" class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="table-cell">{{ item.id }}</td>
+              <td class="table-cell">
+                <div class="font-medium">{{ item.name }}</div>
+                <div v-if="item.product_link" class="text-sm text-gray-500">
+                  <a :href="item.product_link" target="_blank" class="text-primary-600 hover:text-primary-800 underline">
+                    View Product
+                  </a>
+                </div>
+              </td>
+              <td class="table-cell">
+                <span v-if="item.price" class="font-medium text-green-700">
+                  {{ formatPrice(item.price) }}
+                </span>
+                <span v-else class="text-gray-500">-</span>
+              </td>
+              <td class="table-cell">
+                <span v-if="item.keyword" class="badge badge-primary">
+                  {{ item.keyword }}
+                </span>
+                <span v-else class="text-gray-500">-</span>
+              </td>
+              <td class="table-cell text-gray-600 text-sm">
+                {{ formatDate(item.created_at) }}
+              </td>
+              <td class="table-cell text-gray-600 text-sm">
+                {{ formatDate(item.updated_at) }}
+              </td>
+              <td class="table-cell">
+                <button 
+                  @click="viewDetails(item.id)"
+                  class="px-2 py-1 bg-primary-600 text-white border-none rounded text-xs hover:bg-primary-700 transition-colors mr-2"
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Pagination -->
-    <div v-if="totalPages > 1" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+    <div v-if="totalPages > 1" class="flex justify-center items-center gap-3 mt-6">
       <button 
         @click="$emit('page-change', currentPage - 1)"
         :disabled="currentPage <= 1"
-        style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
-        :style="{ opacity: currentPage <= 1 ? 0.5 : 1, cursor: currentPage <= 1 ? 'not-allowed' : 'pointer' }"
+        class="px-3 py-2 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         Previous
       </button>
       
-      <div style="display: flex; gap: 5px;">
+      <div class="flex gap-1">
         <button 
           v-for="page in visiblePages" 
           :key="page"
           @click="$emit('page-change', page)"
-          :style="{
-            padding: '8px 12px',
-            background: page === currentPage ? '#2196f3' : '#f5f5f5',
-            color: page === currentPage ? 'white' : '#333',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }"
+          :class="[
+            'px-3 py-2 border border-gray-300 rounded-md transition-colors',
+            page === currentPage 
+              ? 'bg-primary-600 text-white border-primary-600' 
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ]"
         >
           {{ page }}
         </button>
@@ -138,15 +137,14 @@
       <button 
         @click="$emit('page-change', currentPage + 1)"
         :disabled="currentPage >= totalPages"
-        style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
-        :style="{ opacity: currentPage >= totalPages ? 0.5 : 1, cursor: currentPage >= totalPages ? 'not-allowed' : 'pointer' }"
+        class="px-3 py-2 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         Next
       </button>
     </div>
 
     <!-- Empty State -->
-    <div v-if="items.length === 0 && !pending" style="text-align: center; padding: 40px; color: #666;">
+    <div v-if="items.length === 0 && !pending" class="text-center py-16 text-gray-500">
       <p>No products found.</p>
     </div>
   </div>

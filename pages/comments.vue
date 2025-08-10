@@ -1,20 +1,20 @@
 <template>
-  <div style="min-height: 100vh; background-color: #f5f5f5; padding: 20px; font-family: Arial, sans-serif;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-      <h1 style="color: #333; font-size: 2rem; margin-bottom: 20px;">Comment List</h1>
+  <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Comment List</h1>
       
       <!-- Loading State -->
-      <div v-if="pending" style="text-align: center; padding: 40px;">
-        <p style="color: #666;">Loading comments...</p>
+      <div v-if="pending" class="text-center py-16">
+        <p class="text-gray-600">Loading comments...</p>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" style="background: #fee; border: 1px solid #fcc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <h3 style="color: #c33; margin: 0 0 10px 0;">Error Loading Comments</h3>
-        <p style="color: #666; margin: 0;">{{ error }}</p>
+      <div v-else-if="error" class="bg-red-50 border border-red-200 p-6 rounded-lg mb-6">
+        <h3 class="text-red-800 font-semibold mb-3">Error Loading Comments</h3>
+        <p class="text-gray-600 mb-4">{{ error }}</p>
         <button 
           @click="() => fetchComments()" 
-          style="margin-top: 10px; padding: 8px 16px; background: #c33; color: white; border: none; border-radius: 4px; cursor: pointer;"
+          class="btn-danger"
         >
           Retry
         </button>
@@ -23,46 +23,46 @@
       <!-- Comments Content -->
       <div v-else>
         <!-- Search Filters -->
-        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
-          <h3 style="color: #333; font-size: 1.2rem; margin: 0 0 15px 0;">Search Filters</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div class="card mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Search Filters</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label style="display: block; margin-bottom: 5px; color: #666; font-size: 0.9rem;">Product ID</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Product ID</label>
               <input 
                 v-model="searchFilters.productId" 
                 type="text" 
                 placeholder="Enter product ID"
-                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                class="input-field"
               />
             </div>
             <div>
-              <label style="display: block; margin-bottom: 5px; color: #666; font-size: 0.9rem;">Comment Text</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Comment Text</label>
               <input 
                 v-model="searchFilters.commentText" 
                 type="text" 
                 placeholder="Enter comment text"
-                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                class="input-field"
               />
             </div>
             <div>
-              <label style="display: block; margin-bottom: 5px; color: #666; font-size: 0.9rem;">Capture Time</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Capture Time</label>
               <input 
                 v-model="searchFilters.captureTime" 
                 type="date" 
-                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                class="input-field"
               />
             </div>
           </div>
-          <div style="margin-top: 15px; display: flex; gap: 10px;">
+          <div class="flex flex-wrap gap-3 mt-4">
             <button 
               @click="handleSearch" 
-              style="padding: 8px 16px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer;"
+              class="btn-primary"
             >
               Search
             </button>
             <button 
               @click="handleClearFilters" 
-              style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 4px; cursor: pointer;"
+              class="btn-secondary"
             >
               Clear Filters
             </button>
@@ -70,40 +70,40 @@
         </div>
 
         <!-- Statistics Summary -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Total Comments</h3>
-            <p style="font-size: 2rem; font-weight: bold; margin: 0; color: #333;">{{ formatNumber(commentStats.totalComments) }}</p>
-            <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">Based on current filters</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Total Comments</h3>
+            <p class="text-3xl font-bold text-gray-900">{{ formatNumber(commentStats.totalComments) }}</p>
+            <p class="text-xs text-gray-500 mt-2">Based on current filters</p>
           </div>
 
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Keyword Runs</h3>
-            <div v-if="commentStats.keywordRuns && commentStats.keywordRuns.length > 0" style="height: 200px; display: flex; align-items: center; justify-content: center;">
-              <p style="color: #333; font-size: 1.5rem; font-weight: bold;">{{ commentStats.keywordRuns.length }} data points</p>
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Keyword Runs</h3>
+            <div v-if="commentStats.keywordRuns && commentStats.keywordRuns.length > 0" class="h-48 flex items-center justify-center">
+              <p class="text-2xl font-bold text-gray-900">{{ commentStats.keywordRuns.length }} data points</p>
             </div>
-            <div v-else style="height: 200px; display: flex; align-items: center; justify-content: center;">
-              <p style="color: #666;">No data available</p>
-            </div>
-          </div>
-
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Product Runs</h3>
-            <div v-if="commentStats.productRuns && commentStats.productRuns.length > 0" style="height: 200px; display: flex; align-items: center; justify-content: center;">
-              <p style="color: #333; font-size: 1.5rem; font-weight: bold;">{{ commentStats.productRuns.length }} data points</p>
-            </div>
-            <div v-else style="height: 200px; display: flex; align-items: center; justify-content: center;">
-              <p style="color: #666;">No data available</p>
+            <div v-else class="h-48 flex items-center justify-center">
+              <p class="text-gray-500">No data available</p>
             </div>
           </div>
 
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #666; font-size: 0.9rem; margin: 0 0 10px 0;">Sales Changes</h3>
-            <div v-if="commentStats.salesChanges && commentStats.salesChanges.length > 0" style="height: 200px; display: flex; align-items: center; justify-content: center;">
-              <p style="color: #333; font-size: 1.5rem; font-weight: bold;">{{ commentStats.salesChanges.length }} data points</p>
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Product Runs</h3>
+            <div v-if="commentStats.productRuns && commentStats.productRuns.length > 0" class="h-48 flex items-center justify-center">
+              <p class="text-2xl font-bold text-gray-900">{{ commentStats.productRuns.length }} data points</p>
             </div>
-            <div v-else style="height: 200px; display: flex; align-items: center; justify-content: center;">
-              <p style="color: #666;">No data available</p>
+            <div v-else class="h-48 flex items-center justify-center">
+              <p class="text-gray-500">No data available</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">Sales Changes</h3>
+            <div v-if="commentStats.salesChanges && commentStats.salesChanges.length > 0" class="h-48 flex items-center justify-center">
+              <p class="text-2xl font-bold text-gray-900">{{ commentStats.salesChanges.length }} data points</p>
+            </div>
+            <div v-else class="h-48 flex items-center justify-center">
+              <p class="text-gray-500">No data available</p>
             </div>
           </div>
         </div>
@@ -122,12 +122,14 @@
         />
 
         <!-- Summary -->
-        <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
-          <h3 style="margin: 0 0 10px 0; color: #1976d2;">Comments Summary</h3>
-          <p style="margin: 5px 0; color: #333;">Total Comments: {{ formatNumber(total) }}</p>
-          <p style="margin: 5px 0; color: #333;">Current Page: {{ currentPage }} of {{ totalPages }}</p>
-          <p style="margin: 5px 0; color: #333;">Items per page: {{ limit }}</p>
-          <p style="margin: 5px 0; color: #666;">Showing {{ comments.length }} comments on this page</p>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mt-6">
+          <h3 class="text-blue-800 font-semibold mb-3">Comments Summary</h3>
+          <div class="space-y-2">
+            <p class="text-gray-800">Total Comments: {{ formatNumber(total) }}</p>
+            <p class="text-gray-800">Current Page: {{ currentPage }} of {{ totalPages }}</p>
+            <p class="text-gray-800">Items per page: {{ limit }}</p>
+            <p class="text-gray-600 text-sm">Showing {{ comments.length }} comments on this page</p>
+          </div>
         </div>
       </div>
     </div>

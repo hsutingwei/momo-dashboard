@@ -1,6 +1,20 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  nitro: {
+    compatibilityDate: '2025-08-01'
+  },
+  
+  // CSS
+  css: ['~/assets/css/tailwind.css'],
+  
+  // PostCSS 配置
+  postcss: {
+    plugins: {
+      '@tailwindcss/postcss': {},
+      autoprefixer: {},
+    },
+  },
   
   // 環境變數
   runtimeConfig: {
