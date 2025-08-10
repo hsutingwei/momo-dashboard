@@ -110,6 +110,34 @@
           </div>
         </div>
 
+        <!-- Charts Section -->
+        <div class="space-y-8 mb-8">
+          <!-- 第一張圖：總評論數 -->
+          <div class="card">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">總評論數統計</h3>
+            <div class="text-center py-8">
+              <p class="text-4xl font-bold text-blue-600">{{ formatNumber(total) }}</p>
+              <p class="text-gray-600 mt-2">總共評論數</p>
+            </div>
+          </div>
+
+          <!-- 第二張圖：關鍵字比較或產品趨勢 -->
+          <KeywordRunsChart 
+            v-if="!searchFilters.productId"
+            :keywords="'益生菌,口罩'"
+            :from="searchFilters.captureTime"
+          />
+          <ProductRunsChart 
+            v-else
+            :product-id="searchFilters.productId"
+          />
+
+          <!-- 第三張圖：銷售變化 -->
+          <SalesChangesChart 
+            :product-id="searchFilters.productId"
+          />
+        </div>
+
         <!-- Comments Table -->
         <CommentTable 
           :items="comments" 
@@ -144,6 +172,9 @@ import { useRoute } from 'vue-router';
 import { useComments } from '../composables/useComments';
 import { useCommentStats } from '../composables/useCommentStats';
 import { formatNumber } from '~/utils/global';
+import KeywordRunsChart from '~/components/charts/KeywordRunsChart.vue';
+import ProductRunsChart from '~/components/charts/ProductRunsChart.vue';
+import SalesChangesChart from '~/components/charts/SalesChangesChart.vue';
 
 const route = useRoute();
 const { 
