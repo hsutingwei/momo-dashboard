@@ -2,8 +2,8 @@ import { query } from '~/server/utils/db';
 
 export default defineEventHandler(async (event) => {
   try {
-    const query = getQuery(event);
-    const { product_id } = query;
+    const queryParams = getQuery(event);
+    const { product_id } = queryParams;
 
     let sql: string;
     let params: any[];

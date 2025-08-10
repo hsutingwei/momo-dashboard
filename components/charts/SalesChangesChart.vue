@@ -19,11 +19,13 @@
     
     <!-- 圖表 -->
     <div v-else class="h-96">
-      <v-chart 
-        :option="chartOption" 
-        :loading="pending"
-        autoresize
-      />
+      <ClientOnly>
+        <v-chart 
+          :option="chartOption" 
+          :loading="pending"
+          autoresize
+        />
+      </ClientOnly>
     </div>
   </div>
 </template>

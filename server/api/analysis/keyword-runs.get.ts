@@ -2,8 +2,8 @@ import { query } from '~/server/utils/db';
 
 export default defineEventHandler(async (event) => {
   try {
-    const query = getQuery(event);
-    const { keywords, from, to } = query;
+    const queryParams = getQuery(event);
+    const { keywords, from, to } = queryParams;
 
     if (!keywords) {
       throw createError({
