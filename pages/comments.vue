@@ -74,7 +74,7 @@
           <!-- 第一張圖：總評論數 -->
           <div class="card">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">總評論數統計</h3>
-            <div class="text-center py-8">
+            <div class="text-center py-8 w-full h-full flex flex-col items-center justify-center">
               <p class="text-4xl font-bold text-blue-600">{{ formatNumber(total) }}</p>
               <p class="text-gray-600 mt-2">總共評論數</p>
             </div>

@@ -24,7 +24,12 @@
           :option="chartOption" 
           :loading="pending"
           autoresize
+          v-if="!hasProductFilter"
         />
+        <div v-else class="w-full h-full flex items-center justify-center">
+          <p v-if="firstItem" class="text-4xl font-bold text-blue-600">{{ firstItem.change_times }}</p>
+          <p v-else class="text-4xl font-bold text-gray-500">無資料</p>
+        </div>
       </ClientOnly>
     </div>
   </div>
@@ -94,6 +99,10 @@ const fetchData = async () => {
     pending.value = false;
   }
 };
+
+const firstItem = computed(() => (
+  Array.isArray(data.value) && data.value.length ? data.value[0] : null
+));
 
 // 計算圖表配置
 const chartOption = computed(() => {
