@@ -215,7 +215,6 @@ interface Props {
   modelValue: boolean;
   comment: Comment;
 }
-
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
@@ -226,33 +225,71 @@ const emit = defineEmits<{
 const product = ref<Product | null>(null);
 const productLoading = ref(false);
 
-// Computed properties
+// 可選：避免重複請求造成競態（快速切換列/開關 modal）
+let lastRequestedPid: number | string | undefined;
+
+// 影片資料（若有）
 const videoItems = computed(() => {
   if (!props.comment.video_url) return [];
-  return [{
-    url: props.comment.video_url,
-    thumbnail: undefined // 如果有 video_thumbnail_img 欄位可以使用
-  }];
+  return [
+    {
+      url: props.comment.video_url,
+      thumbnail: undefined, // 若未來有 video_thumbnail_img 可放這裡
+    },
+  ];
 });
 
-// Load product data when modal opens
-watch(() => props.modelValue, async (newValue) => {
-  if (newValue && props.comment.product_id && !product.value) {
-    await loadProduct();
-  }
-});
-
-// Load product data
-const loadProduct = async () => {
+/**
+ * 載入商品資料
+ * - 傳入當下的 pid，避免請求回來時 pid 已被其他列覆蓋
+ */
+const loadProduct = async (pid: number | string) => {
   try {
     productLoading.value = true;
-    const productData = await $fetch<Product>(`/api/products/${props.comment.product_id}`);
-    product.value = productData;
+    lastRequestedPid = pid;
+
+    const data = await $fetch<Product>(`/api/products/${pid}`);
+
+    // 只在請求的 pid 仍是最新時才寫入，避免 race condition
+    if (lastRequestedPid === pid) {
+      product.value = data ?? null;
+    }
   } catch (error) {
     console.error('Failed to load product:', error);
+    // 發生錯誤也清掉避免殘留
     product.value = null;
   } finally {
     productLoading.value = false;
   }
 };
-</script> 
+
+/**
+ * 監看「是否開啟 + 目前列的 product_id」
+ * 觸發時機：
+ * 1) false -> true（第一次打開）且有 pid：載入
+ * 2) 已開啟時 pid 變了（點了另一列但仍在同一個 modal）：重新載入
+ * 3) 關閉時：清掉 product，避免下次看到舊資料
+ */
+watch(
+  [() => props.modelValue, () => props.comment?.product_id],
+  async ([open, pid], [prevOpen, prevPid]) => {
+    // 關閉：清掉資料
+    if (!open) {
+      product.value = null;
+      lastRequestedPid = undefined;
+      return;
+    }
+
+    // 剛從關閉 -> 開啟 且有 pid
+    if (open && !prevOpen && pid) {
+      await loadProduct(pid);
+      return;
+    }
+
+    // 已開啟且 pid 改變（例如切換到另一筆）
+    if (open && pid && pid !== prevPid) {
+      await loadProduct(pid);
+    }
+  }
+);
+</script>
