@@ -34,6 +34,7 @@ import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { BarChart } from 'echarts/charts';
+import { LineChart } from 'echarts/charts';
 import {
   TitleComponent,
   TooltipComponent,
@@ -45,6 +46,7 @@ import {
 use([
   CanvasRenderer,
   BarChart,
+  LineChart,
   TitleComponent,
   TooltipComponent,
   GridComponent,
@@ -107,9 +109,7 @@ const chartOption = computed(() => {
         text: '無數據',
         left: 'center',
         top: 'middle',
-        textStyle: {
-          color: '#999'
-        }
+        textStyle: { color: '#999' }
       }
     };
   }
@@ -117,7 +117,7 @@ const chartOption = computed(() => {
   // 按關鍵字分組數據
   const keywordGroups = new Map<string, KeywordRunData[]>();
   const maxRuns = data.value[0]?.max_runs || 0;
-  
+
   data.value.forEach(item => {
     if (!keywordGroups.has(item.keyword)) {
       keywordGroups.set(item.keyword, []);
@@ -128,18 +128,18 @@ const chartOption = computed(() => {
   // 準備系列數據
   const series: any[] = [];
   const xAxisData: string[] = [];
-  
+
   // 生成 X 軸標籤
   for (let i = 1; i <= maxRuns; i++) {
     xAxisData.push(`第${i}次`);
   }
 
-  // 為每個關鍵字創建系列
+  // 為每個關鍵字創建系列（改成折線圖）
   keywordGroups.forEach((items, keyword) => {
     const seriesData = new Array(maxRuns).fill(0);
-    
+
     items.forEach(item => {
-      const index = item.aligned_index - 1; // 轉換為 0-based 索引
+      const index = item.aligned_index - 1; // 0-based
       if (index >= 0 && index < maxRuns) {
         seriesData[index] = item.comment_count;
       }
@@ -147,11 +147,13 @@ const chartOption = computed(() => {
 
     series.push({
       name: keyword,
-      type: 'bar',
+      type: 'line',            // ← 改成折線圖
       data: seriesData,
-      emphasis: {
-        focus: 'series'
-      }
+      smooth: true,            // ← 平滑線
+      symbol: 'circle',        // ← 點樣式
+      symbolSize: 6,
+      emphasis: { focus: 'series' }
+      // 若想填充面積可加：areaStyle: {}
     });
   });
 
@@ -159,15 +161,14 @@ const chartOption = computed(() => {
     tooltip: {
       trigger: 'axis',
       axisPointer: {
-        type: 'shadow'
+        type: 'line'           // ← 折線圖用 line 指示器
       },
       formatter: (params: any) => {
         let result = `${params[0].axisValue}<br/>`;
         params.forEach((param: any) => {
           if (param.value > 0) {
-            // 找到對應的時間標籤
-            const item = data.value.find(d => 
-              d.keyword === param.seriesName && 
+            const item = data.value.find(d =>
+              d.keyword === param.seriesName &&
               Number(d.aligned_index) === param.dataIndex + 1
             );
             const timeLabel = item ? item.run_ts_label : '';
@@ -190,13 +191,12 @@ const chartOption = computed(() => {
     xAxis: {
       type: 'category',
       data: xAxisData,
-      axisLabel: {
-        rotate: 45
-      }
+      axisLabel: { rotate: 45 }
     },
     yAxis: {
       type: 'value',
-      name: '評論數'
+      name: '評論數',
+      minInterval: 1          // 讓整數更漂亮（可選）
     },
     series
   };
