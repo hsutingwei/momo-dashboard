@@ -103,7 +103,7 @@ export default defineEventHandler(async (event) => {
       aggregated AS (
         SELECT
           keyword,
-          batch_time AS batch_capture_time,
+          to_char(batch_time, 'YYYY/MM/DD') AS batch_capture_time,
           COUNT(DISTINCT product_id) AS total_products_in_batch,
           COUNT(DISTINCT product_id) FILTER (
             WHERE prev_sales IS NOT NULL
@@ -114,7 +114,7 @@ export default defineEventHandler(async (event) => {
               AND sales_count IS DISTINCT FROM prev_sales
           ) AS total_change_events
         FROM with_prev
-        GROUP BY keyword, batch_time
+        GROUP BY keyword, to_char(batch_time, 'YYYY/MM/DD')
       ),
 
       -- 計算批次序號
