@@ -64,6 +64,7 @@ export function useProducts() {
         product_link: item.product_link,
         keyword: item.keyword,
         is_complete: item.is_complete,
+        comment_count: item.comment_count,
         created_at: item.created_at,
         updated_at: item.updated_at
       }));
