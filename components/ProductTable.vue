@@ -61,6 +61,15 @@
                 </span>
               </th>
               <th 
+                @click="$emit('sort', 'sales_changed')" 
+                class="table-header"
+              >
+                Sales Changed
+                <span v-if="currentSortBy === 'sales_changed'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
                 @click="$emit('sort', 'updated_at')" 
                 class="table-header"
               >
@@ -106,6 +115,18 @@
                 >
                   {{ item.comment_count || 0 }}
                 </button>
+              </td>
+              <td class="table-cell">
+                <span 
+                  :class="[
+                    'px-2 py-1 rounded text-xs font-medium',
+                    item.sales_changed === '有' 
+                      ? 'bg-orange-100 text-orange-800' 
+                      : 'bg-gray-100 text-gray-600'
+                  ]"
+                >
+                  {{ item.sales_changed }}
+                </span>
               </td>
               <td class="table-cell text-gray-600 text-sm">
                 {{ formatDate(item.updated_at) }}

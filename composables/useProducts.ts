@@ -65,6 +65,7 @@ export function useProducts() {
         keyword: item.keyword,
         is_complete: item.is_complete,
         comment_count: item.comment_count,
+        sales_changed: item.sales_changed,
         created_at: item.created_at,
         updated_at: item.updated_at
       }));

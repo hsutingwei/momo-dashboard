@@ -23,13 +23,26 @@ export default defineEventHandler(async (event) => {
         p.keyword, 
         p.created_at, 
         p.updated_at,
-        COALESCE(pc.comment_count, 0) as comment_count
+        COALESCE(pc.comment_count, 0) as comment_count,
+        CASE 
+          WHEN ss.max_sales IS NULL OR ss.min_sales IS NULL THEN '無'
+          WHEN ss.max_sales = ss.min_sales THEN '無'
+          ELSE '有'
+        END as sales_changed
       FROM products p
       LEFT JOIN (
         SELECT product_id, COUNT(*) as comment_count
         FROM product_comments
         GROUP BY product_id
       ) pc ON p.id = pc.product_id
+      LEFT JOIN (
+        SELECT 
+          product_id,
+          MAX(sales_count) as max_sales,
+          MIN(sales_count) as min_sales
+        FROM sales_snapshots
+        GROUP BY product_id
+      ) ss ON p.id = ss.product_id
       WHERE 1=1
     `;
     const params: any[] = [];
@@ -54,7 +67,7 @@ export default defineEventHandler(async (event) => {
     const total = countResult[0]?.total || 0;
 
     // 排序
-    const safeFields = ['id', 'name', 'price', 'keyword', 'comment_count', 'created_at', 'updated_at'];
+    const safeFields = ['id', 'name', 'price', 'keyword', 'comment_count', 'sales_changed', 'created_at', 'updated_at'];
     const field = safeFields.includes(sortBy as string) ? sortBy : 'id';
     const order = (sortOrder === 'desc' ? 'DESC' : 'ASC');
     sql += ` ORDER BY ${field} ${order}`;

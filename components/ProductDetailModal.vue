@@ -59,6 +59,19 @@
                         </p>
                     </div>
                     <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-500">銷售變化</label>
+                        <p class="text-gray-900">
+                            <span :class="[
+                                'px-2 py-1 rounded text-xs font-medium',
+                                product?.sales_changed === '有'
+                                    ? 'bg-orange-100 text-orange-800'
+                                    : 'bg-gray-100 text-gray-600'
+                            ]">
+                                {{ product?.sales_changed || '無' }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="space-y-2">
                         <label class="text-sm font-medium text-gray-500">建立時間</label>
                         <p class="text-gray-900">{{ formatDate(product?.created_at || '') }}</p>
                     </div>
@@ -149,7 +162,7 @@
                     <div class="flex items-center justify-between">
                         <p class="text-sm text-gray-600">
                             範圍: <span class="font-medium">{{ tfidfData.scope === 'product' ? '商品' : '全站'
-                            }}</span>
+                                }}</span>
                         </p>
                         <p class="text-sm text-gray-600">
                             顯示: <span class="font-medium">{{ tfidfData.terms.length }}</span> 個詞彙
@@ -161,8 +174,7 @@
                         <span v-for="term in tfidfData.terms" :key="term.term" :style="{
                             fontSize: `${Math.max(12, Math.min(24, 12 + (term.total_tfidf / maxTfidf) * 12))}px`,
                             color: getTfidfColor(term.total_tfidf / maxTfidf)
-                        }"
-                            class="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+                        }" class="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
                             :title="`${term.term}: ${term.total_tfidf.toFixed(2)} (${term.doc_count} 則評論)`">
                             {{ term.term }}
                         </span>
