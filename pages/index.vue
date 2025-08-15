@@ -23,7 +23,7 @@
       <!-- Dashboard Content -->
       <div v-else>
         <!-- KPI Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <div class="card">
             <h3 class="text-sm font-medium text-gray-500 mb-3">Total Products</h3>
             <NuxtLink to="/products" class="block">
@@ -50,6 +50,27 @@
             <h3 class="text-sm font-medium text-gray-500 mb-3">Sales Changes</h3>
             <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.productsWithSalesChanges) }}</p>
             <p class="text-xs text-gray-500 mt-2">Products with changes</p>
+          </div>
+
+          <!-- 銷售下降商品數 -->
+          <div class="card cursor-pointer hover:shadow-lg transition-shadow" @click="openSalesDropsModal">
+            <h3 class="text-sm font-medium text-gray-500 mb-3">銷售下降商品數</h3>
+            <div class="flex items-center justify-between">
+              <div v-if="salesDropsLoading" class="flex items-center">
+                <div class="w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin mr-2"></div>
+                <span class="text-gray-400">載入中...</span>
+              </div>
+              <div v-else-if="salesDropsError" class="text-red-600 text-sm">
+                {{ salesDropsError }}
+              </div>
+              <div v-else class="flex items-center">
+                <p class="text-3xl font-bold text-red-600">{{ formatNumber(salesDropsCount) }}</p>
+                <svg class="w-5 h-5 text-red-500 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">點擊查看明細</p>
           </div>
         </div>
 
@@ -90,15 +111,35 @@
         </div>
       </div>
     </div>
+
+    <!-- 銷售下降商品 Modal -->
+    <SalesDropsModal v-model="showSalesDropsModal" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { useDashboardStats } from '../composables/useDashboardStats';
+import { useSalesDrops } from '../composables/useSalesDrops';
 import { formatNumber } from '~/utils/global';
 import KeywordRunsChart from '~/components/charts/KeywordRunsChart.vue';
 import SalesChangesChart from '~/components/charts/SalesChangesChart.vue';
 import BatchChangesChart from '~/components/charts/BatchChangesChart.vue';
+import SalesDropsModal from '~/components/SalesDropsModal.vue';
 
 const { stats, error, refresh, pending } = useDashboardStats();
+const { count: salesDropsCount, loading: salesDropsLoading, error: salesDropsError, fetchCount } = useSalesDrops();
+
+// Modal 狀態
+const showSalesDropsModal = ref(false);
+
+// 打開銷售下降商品 Modal
+const openSalesDropsModal = () => {
+  showSalesDropsModal.value = true;
+};
+
+// 組件掛載時獲取銷售下降商品數量
+onMounted(() => {
+  fetchCount();
+});
 </script> 

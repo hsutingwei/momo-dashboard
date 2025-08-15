@@ -124,4 +124,23 @@ export interface BatchChangeData {
   changed_products_count: number;
   total_change_events: number;
   batch_index: number;        // 第 n 次
+}
+
+// 銷售下降商品項目介面
+export interface SalesDropItem {
+  product_id: number;
+  product_name: string;
+  keyword: string;
+  product_link: string | null;
+  batch_capture_time: string; // ISO
+  original_capture_time: string; // ISO
+  prev_sales: number | null;
+  sales_count: number;
+  delta: number;
+}
+
+// 銷售下降商品回應介面
+export interface SalesDropResp {
+  count: number;
+  items: SalesDropItem[];
 } 
