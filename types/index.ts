@@ -180,6 +180,7 @@ export interface ProductTfidfResp {
 export interface TfidfTopResp {
   scope: 'product' | 'global';
   product_id?: number;
+  keyword?: string;
   pipeline_version: string | null;
   limit: number;
   terms: Array<{
@@ -189,4 +190,10 @@ export interface TfidfTopResp {
     total_tf: number;      // SUM(tf)
     idf_any: number;       // 任一/最大 idf（參考值）
   }>;
+}
+
+// Keywords 回應
+export interface KeywordsResp {
+  success: boolean;
+  keywords: string[];
 } 

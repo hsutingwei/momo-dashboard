@@ -4,6 +4,7 @@ export default defineEventHandler(async (event) => {
   try {
     const { 
       product_id, 
+      keyword,
       pipeline_version, 
       min_len = '2', 
       max_len = '4', 
@@ -18,7 +19,9 @@ export default defineEventHandler(async (event) => {
       WITH prod_comments AS (
         SELECT pc.comment_id
         FROM product_comments pc
+        JOIN products p ON pc.product_id = p.id
         WHERE ($1::integer IS NULL OR pc.product_id = $1::integer)
+          AND ($6::text IS NULL OR p.keyword = $6::text)
       )
       SELECT
         ts.token,
@@ -46,13 +49,15 @@ export default defineEventHandler(async (event) => {
       finalPipelineVersion,
       parseInt(min_len as string),
       parseInt(max_len as string),
-      parseInt(limit as string)
+      parseInt(limit as string),
+      keyword || null
     ])
 
     return {
       success: true,
       scope: product_id ? 'product' : 'global',
       product_id: product_id ? parseInt(product_id as string) : undefined,
+      keyword: keyword || undefined,
       pipeline_version: finalPipelineVersion,
       limit: parseInt(limit as string),
       terms: result.map(row => ({

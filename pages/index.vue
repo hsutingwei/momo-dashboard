@@ -79,6 +79,15 @@
           <SalesChangesChart />
           <BatchChangesChart />
         </div>
+
+        <Collapsible title="TF-IDF" :default-open="false" class="card mb-6">
+          <template #icon>
+            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+            </svg>
+          </template>
+          <TfidfWordCloud />
+        </Collapsible>
   
         <!-- Status Card -->
         <div class="card mb-6">
@@ -126,6 +135,8 @@ import KeywordRunsChart from '~/components/charts/KeywordRunsChart.vue';
 import SalesChangesChart from '~/components/charts/SalesChangesChart.vue';
 import BatchChangesChart from '~/components/charts/BatchChangesChart.vue';
 import SalesDropsModal from '~/components/SalesDropsModal.vue';
+import Collapsible from '~/components/ui/Collapsible.vue';
+import TfidfWordCloud from '~/components/TfidfWordCloud.vue';
 
 const { stats, error, refresh, pending } = useDashboardStats();
 const { count: salesDropsCount, loading: salesDropsLoading, error: salesDropsError, fetchCount } = useSalesDrops();
