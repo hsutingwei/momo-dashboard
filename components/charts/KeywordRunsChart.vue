@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">關鍵字比較 - 分批次評論數</h3>
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">關鍵字比較 - 批次評論數</h3>
     
     <!-- 載入狀態 -->
     <div v-if="pending" class="flex items-center justify-center h-64">
