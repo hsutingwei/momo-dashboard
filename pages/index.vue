@@ -107,17 +107,6 @@
             </p>
           </div>
         </div>
-  
-        <!-- Success Message -->
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
-          <h3 class="text-blue-800 font-semibold mb-3">Success!</h3>
-          <div class="space-y-2">
-            <p class="text-gray-800">✅ Dashboard is now working!</p>
-            <p class="text-gray-800">✅ Nuxt 4.0.1 is running correctly</p>
-            <p class="text-gray-800">✅ API data is loading: {{ !pending ? 'Yes' : 'No' }}</p>
-            <p class="text-gray-600 text-sm">Data from Database: Total Products = {{ formatNumber(stats.totalProducts) }}, Total Comments = {{ formatNumber(stats.totalComments) }}, Unique Keywords = {{ formatNumber(stats.uniqueKeywords) }}</p>
-          </div>
-        </div>
       </div>
     </div>
 
