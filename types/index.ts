@@ -114,4 +114,14 @@ export interface SalesChange {
   total_change_events?: number;
   changed_products_count?: number;
   change_times?: number;
+}
+
+// 批次變化數據介面
+export interface BatchChangeData {
+  keyword: string;
+  batch_capture_time: string; // ISO datetime
+  total_products_in_batch: number;
+  changed_products_count: number;
+  total_change_events: number;
+  batch_index: number;        // 第 n 次
 } 

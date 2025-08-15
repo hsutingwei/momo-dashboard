@@ -52,6 +52,12 @@
             <p class="text-xs text-gray-500 mt-2">Products with changes</p>
           </div>
         </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <KeywordRunsChart/>
+          <SalesChangesChart />
+          <BatchChangesChart />
+        </div>
   
         <!-- Status Card -->
         <div class="card mb-6">
@@ -90,6 +96,9 @@
 <script setup lang="ts">
 import { useDashboardStats } from '../composables/useDashboardStats';
 import { formatNumber } from '~/utils/global';
+import KeywordRunsChart from '~/components/charts/KeywordRunsChart.vue';
+import SalesChangesChart from '~/components/charts/SalesChangesChart.vue';
+import BatchChangesChart from '~/components/charts/BatchChangesChart.vue';
 
 const { stats, error, refresh, pending } = useDashboardStats();
 </script> 
