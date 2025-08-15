@@ -60,13 +60,11 @@
                   {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
                 </span>
               </th>
-              <th class="table-header cursor-default">
-                Actions
-              </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item.id" class="border-b border-gray-100 hover:bg-gray-50">
+            <tr v-for="item in items" :key="item.id" class="border-b border-gray-100 hover:bg-gray-50"
+            @click="openProductDetail(item)">
               <td class="table-cell">{{ item.id }}</td>
               <td class="table-cell">
                 <div class="font-medium">{{ item.name }}</div>
@@ -93,14 +91,6 @@
               </td>
               <td class="table-cell text-gray-600 text-sm">
                 {{ formatDate(item.updated_at) }}
-              </td>
-              <td class="table-cell">
-                <button 
-                  @click="viewDetails(item.id)"
-                  class="px-2 py-1 bg-primary-600 text-white border-none rounded text-xs hover:bg-primary-700 transition-colors mr-2"
-                >
-                  View
-                </button>
               </td>
             </tr>
           </tbody>
@@ -173,8 +163,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   sort: [field: string];
   'page-change': [page: number];
-  viewDetails: [id: number];
-  editProduct: [id: number];
+  'open-detail': [item: Product];
 }>();
 
 // 計算可見的頁碼
@@ -191,13 +180,8 @@ const visiblePages = computed(() => {
   return pages;
 });
 
-// 查看詳情
-const viewDetails = (id: number) => {
-  emit('viewDetails', id);
-};
-
-// 編輯產品
-const editProduct = (id: number) => {
-  emit('editProduct', id);
+// 開啟評論詳細資訊
+const openProductDetail = (item: Product) => {
+  emit('open-detail', item);
 };
 </script> 

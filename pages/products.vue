@@ -81,6 +81,7 @@
           :current-sort-order="filters.sortOrder"
           @sort="handleSort"
           @page-change="handlePageChange"
+          @open-detail="openProductDetail"
         />
 
         <!-- Summary -->
@@ -102,6 +103,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProducts } from '../composables/useProducts';
+import type { Product } from '~/types';
 
 const route = useRoute();
 const { 
@@ -153,6 +155,16 @@ const handleSort = (field: string) => {
 // 處理分頁
 const handlePageChange = (page: number) => {
   goToPage(page);
+};
+
+// Modal states
+const showProductModal = ref(false);
+const selectedProduct = ref<Product | null>(null);
+
+// 開啟商品詳細資訊
+const openProductDetail = (item: Product) => {
+  selectedProduct.value = item;
+  showProductModal.value = true;
 };
 
 // 從 URL 參數初始化
