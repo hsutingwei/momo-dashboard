@@ -12,6 +12,7 @@ module.exports = {
     extend: {
       colors: {
         primary: {
+          DEFAULT: '#3b82f6',
           50: '#eff6ff',
           100: '#dbeafe',
           200: '#bfdbfe',
@@ -22,6 +23,7 @@ module.exports = {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
+          foreground: '#ffffff',
         },
         gray: {
           50: '#f9fafb',
@@ -34,7 +36,44 @@ module.exports = {
           700: '#374151',
           800: '#1f2937',
           900: '#111827',
-        }
+        },
+        secondary: {
+          DEFAULT: '#f3f4f6',
+          foreground: '#374151',
+        },
+        destructive: {
+          DEFAULT: '#ef4444',
+          foreground: '#ffffff',
+        },
+        muted: {
+          DEFAULT: '#f9fafb',
+          foreground: '#6b7280',
+        },
+        accent: {
+          DEFAULT: '#f3f4f6',
+          foreground: '#374151',
+        },
+        popover: {
+          DEFAULT: '#ffffff',
+          foreground: '#111827',
+        },
+        card: {
+          DEFAULT: '#ffffff',
+          foreground: '#111827',
+        },
+        border: {
+          DEFAULT: '#e5e7eb',
+        },
+        input: {
+          DEFAULT: '#e5e7eb',
+        },
+        ring: '#3b82f6',
+        background: '#ffffff',
+        foreground: '#111827',
+        'input-background': '#ffffff',
+        'muted-foreground': '#6b7280',
+        'outline-ring': '#3b82f6',
+        'switch-background': '#e5e7eb',
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],

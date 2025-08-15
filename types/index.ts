@@ -143,4 +143,48 @@ export interface SalesDropItem {
 export interface SalesDropResp {
   count: number;
   items: SalesDropItem[];
+}
+
+// 商品銷售變化點
+export interface ProductSalesPoint {
+  batch_capture_time: string; // ISO
+  sales_count: number | null; // 若該批無快照，可為 null 或 0
+}
+
+// 商品銷售變化序列回應
+export interface ProductSalesSeriesResp {
+  product_id: number;
+  product_name: string;
+  keyword: string;
+  points: ProductSalesPoint[];
+}
+
+// TF-IDF 詞彙
+export interface TfidfTerm {
+  term: string;
+  score: number;
+  docs?: number;
+}
+
+// 商品 TF-IDF 回應
+export interface ProductTfidfResp {
+  product_id: number;
+  keyword: string;
+  pipeline_version: string;
+  terms: TfidfTerm[]; // Top 100
+}
+
+// TF-IDF Top 回應
+export interface TfidfTopResp {
+  scope: 'product' | 'global';
+  product_id?: number;
+  pipeline_version: string | null;
+  limit: number;
+  terms: Array<{
+    term: string;          // token
+    total_tfidf: number;   // SUM(tfidf)
+    doc_count: number;     // 出現於幾則留言
+    total_tf: number;      // SUM(tf)
+    idf_any: number;       // 任一/最大 idf（參考值）
+  }>;
 } 

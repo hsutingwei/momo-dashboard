@@ -96,6 +96,12 @@
         </div>
       </div>
     </div>
+
+    <!-- Product Detail Modal -->
+    <ProductDetailModal 
+      v-model="showProductModal" 
+      :product="selectedProduct" 
+    />
   </div>
 </template>
 
@@ -104,6 +110,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProducts } from '../composables/useProducts';
 import type { Product } from '~/types';
+import ProductDetailModal from '~/components/ProductDetailModal.vue';
 
 const route = useRoute();
 const { 
