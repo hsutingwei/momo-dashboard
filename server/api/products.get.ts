@@ -73,8 +73,8 @@ export default defineEventHandler(async (event) => {
     sql += ` ORDER BY ${field} ${order}`;
 
     // 分頁
-    const limitNum = parseInt(limit as string) || 10;
-    const offsetNum = parseInt(offset as string) || 0;
+    const limitNum = Math.max(1, parseInt(String(limit), 10) || 10);
+    const offsetNum = Math.max(1, parseInt(String(page), 10) || 1);
     sql += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
     params.push(limitNum, offsetNum);
 
