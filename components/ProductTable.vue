@@ -52,6 +52,15 @@
                 </span>
               </th>
               <th 
+                @click="$emit('sort', 'comment_count')" 
+                class="table-header"
+              >
+                Comments
+                <span v-if="currentSortBy === 'comment_count'" class="ml-1">
+                  {{ currentSortOrder === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
                 @click="$emit('sort', 'updated_at')" 
                 class="table-header"
               >
@@ -88,6 +97,15 @@
               </td>
               <td class="table-cell text-gray-600 text-sm">
                 {{ formatDate(item.created_at) }}
+              </td>
+              <td class="table-cell">
+                <button 
+                  @click.stop="viewComments(item.id)"
+                  class="text-primary-600 hover:text-primary-800 underline font-medium"
+                  :title="`View ${item.comment_count} comments`"
+                >
+                  {{ item.comment_count || 0 }}
+                </button>
               </td>
               <td class="table-cell text-gray-600 text-sm">
                 {{ formatDate(item.updated_at) }}
@@ -164,6 +182,7 @@ const emit = defineEmits<{
   sort: [field: string];
   'page-change': [page: number];
   'open-detail': [item: Product];
+  'view-comments': [productId: number];
 }>();
 
 // 計算可見的頁碼
@@ -183,5 +202,10 @@ const visiblePages = computed(() => {
 // 開啟評論詳細資訊
 const openProductDetail = (item: Product) => {
   emit('open-detail', item);
+};
+
+// 查看評論
+const viewComments = (productId: number) => {
+  emit('view-comments', productId);
 };
 </script> 

@@ -82,6 +82,7 @@
           @sort="handleSort"
           @page-change="handlePageChange"
           @open-detail="openProductDetail"
+          @view-comments="viewComments"
         />
 
         <!-- Summary -->
@@ -170,6 +171,11 @@ const selectedProduct = ref<Product | null>(null);
 const openProductDetail = (item: Product) => {
   selectedProduct.value = item;
   showProductModal.value = true;
+};
+
+// 查看評論
+const viewComments = (productId: number) => {
+  navigateTo(`/comments?product_id=${productId}`);
 };
 
 // 從 URL 參數初始化

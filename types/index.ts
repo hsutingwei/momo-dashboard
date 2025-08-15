@@ -6,6 +6,7 @@ export interface Product {
   product_link: string;
   keyword: string;
   is_complete: boolean;
+  comment_count: number;
   created_at: string;
   updated_at: string;
 }

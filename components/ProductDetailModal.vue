@@ -72,6 +72,18 @@
                   </p>
                 </div>
                 <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-500">評論數量</label>
+                  <p class="text-gray-900">
+                    <button 
+                      @click="viewComments(product?.id)"
+                      class="text-primary-600 hover:text-primary-800 underline font-medium"
+                      :title="`View ${product?.comment_count || 0} comments`"
+                    >
+                      {{ product?.comment_count || 0 }} 則評論
+                    </button>
+                  </p>
+                </div>
+                <div class="space-y-2">
                   <label class="text-sm font-medium text-gray-500">建立時間</label>
                   <p class="text-gray-900">{{ formatDate(product?.created_at || '') }}</p>
                 </div>
@@ -105,7 +117,15 @@
               
               <div v-else-if="salesData && salesData.points.length > 0" class="h-80">
                 <ClientOnly>
-                  <v-chart :option="salesChartOption" autoresize />
+                  <component 
+                    v-if="VChart" 
+                    :is="VChart" 
+                    :option="salesChartOption" 
+                    autoresize 
+                  />
+                  <div v-else class="flex items-center justify-center h-full">
+                    <div class="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
                 </ClientOnly>
               </div>
               
@@ -180,31 +200,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import VChart from 'vue-echarts';
-import { use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { LineChart } from 'echarts/charts';
-import {
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
-  LegendComponent
-} from 'echarts/components';
+import { ref, computed, watch, onMounted } from 'vue';
 import type { Product } from '~/types';
 import type { ProductSalesSeriesResp, TfidfTopResp } from '~/types';
 import { formatDate, formatPrice } from '~/utils/global';
 import Collapsible from '~/components/ui/Collapsible.vue';
 
-// 註冊 ECharts 組件
-use([
-  CanvasRenderer,
-  LineChart,
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
-  LegendComponent
-]);
+// 動態導入 ECharts 組件，避免 SSR 問題
+let VChart: any = null;
+let use: any = null;
+let CanvasRenderer: any = null;
+let LineChart: any = null;
+let TitleComponent: any = null;
+let TooltipComponent: any = null;
+let GridComponent: any = null;
+let LegendComponent: any = null;
+
+// 客戶端初始化 ECharts
+const initECharts = async () => {
+  if (process.client) {
+    const echarts = await import('echarts/core');
+    const renderers = await import('echarts/renderers');
+    const charts = await import('echarts/charts');
+    const components = await import('echarts/components');
+    const vueEcharts = await import('vue-echarts');
+    
+    VChart = vueEcharts.default;
+    use = echarts.use;
+    CanvasRenderer = renderers.CanvasRenderer;
+    LineChart = charts.LineChart;
+    TitleComponent = components.TitleComponent;
+    TooltipComponent = components.TooltipComponent;
+    GridComponent = components.GridComponent;
+    LegendComponent = components.LegendComponent;
+    
+    // 註冊 ECharts 組件
+    use([
+      CanvasRenderer,
+      LineChart,
+      TitleComponent,
+      TooltipComponent,
+      GridComponent,
+      LegendComponent
+    ]);
+  }
+};
 
 interface Props {
   modelValue: boolean;
@@ -301,6 +341,13 @@ const closeModal = () => {
   emit('update:modelValue', false);
 };
 
+// 查看評論
+const viewComments = (productId?: number) => {
+  if (productId) {
+    navigateTo(`/comments?product_id=${productId}`);
+  }
+};
+
 // 獲取銷售數據
 const fetchSalesData = async () => {
   if (!props.product?.id) return;
@@ -347,18 +394,33 @@ const getTfidfColor = (ratio: number) => {
 };
 
 // 監聽 Modal 開啟
-watch(() => props.modelValue, (newValue) => {
+watch(() => props.modelValue, async (newValue) => {
   if (newValue && props.product) {
+    // 確保 ECharts 已初始化
+    if (!VChart) {
+      await initECharts();
+    }
     fetchSalesData();
     fetchTfidfData();
   }
 });
 
 // 監聽商品變化
-watch(() => props.product, (newProduct) => {
+watch(() => props.product, async (newProduct) => {
   if (props.modelValue && newProduct) {
+    // 確保 ECharts 已初始化
+    if (!VChart) {
+      await initECharts();
+    }
     fetchSalesData();
     fetchTfidfData();
+  }
+});
+
+// 組件掛載時初始化 ECharts
+onMounted(async () => {
+  if (process.client) {
+    await initECharts();
   }
 });
 </script>

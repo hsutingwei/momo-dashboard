@@ -14,7 +14,24 @@ export default defineEventHandler(async (event) => {
       page = '1'
     } = getQuery(event);
 
-    let sql = 'select id, name, price::float AS price, product_link, keyword, created_at, updated_at from products WHERE 1=1';
+    let sql = `
+      SELECT 
+        p.id, 
+        p.name, 
+        p.price::float AS price, 
+        p.product_link, 
+        p.keyword, 
+        p.created_at, 
+        p.updated_at,
+        COALESCE(pc.comment_count, 0) as comment_count
+      FROM products p
+      LEFT JOIN (
+        SELECT product_id, COUNT(*) as comment_count
+        FROM product_comments
+        GROUP BY product_id
+      ) pc ON p.id = pc.product_id
+      WHERE 1=1
+    `;
     const params: any[] = [];
 
     // 篩選條件
@@ -32,12 +49,12 @@ export default defineEventHandler(async (event) => {
     }
 
     // 計算總筆數
-    const countSql = sql.replace('select id, name, price::float AS price, product_link, keyword, created_at, updated_at', 'SELECT COUNT(*) as total');
+    const countSql = sql.replace(/SELECT[\s\S]*?FROM products p[\s\S]*?WHERE 1=1/, 'SELECT COUNT(*) as total FROM products p WHERE 1=1');
     const countResult = await query<{ total: number }>(countSql, params);
     const total = countResult[0]?.total || 0;
 
     // 排序
-    const safeFields = ['id', 'name', 'price', 'keyword', 'created_at', 'updated_at'];
+    const safeFields = ['id', 'name', 'price', 'keyword', 'comment_count', 'created_at', 'updated_at'];
     const field = safeFields.includes(sortBy as string) ? sortBy : 'id';
     const order = (sortOrder === 'desc' ? 'DESC' : 'ASC');
     sql += ` ORDER BY ${field} ${order}`;
@@ -51,8 +68,6 @@ export default defineEventHandler(async (event) => {
     const rows = await query<Product>(sql, params);
     const currentPage = parseInt(page as string) || 1;
     const totalPages = Math.ceil(total / limitNum);
-
-    // console.log(total)
 
     return {
       items: rows,
