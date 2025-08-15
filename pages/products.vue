@@ -129,8 +129,6 @@ const {
   clearFilters 
 } = useProducts();
 
-console.log(products)
-
 // 搜尋篩選條件
 const searchFilters = ref({
   productId: '',

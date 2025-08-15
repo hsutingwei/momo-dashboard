@@ -79,17 +79,6 @@
                   <label class="text-sm font-medium text-gray-500">更新時間</label>
                   <p class="text-gray-900">{{ formatDate(product?.updated_at || '') }}</p>
                 </div>
-                <div class="space-y-2">
-                  <label class="text-sm font-medium text-gray-500">完成狀態</label>
-                  <p class="text-gray-900">
-                    <span v-if="product?.is_complete" class="badge badge-success">
-                      已完成
-                    </span>
-                    <span v-else class="badge badge-warning">
-                      未完成
-                    </span>
-                  </p>
-                </div>
               </div>
             </Collapsible>
 
@@ -205,6 +194,7 @@ import {
 import type { Product } from '~/types';
 import type { ProductSalesSeriesResp, TfidfTopResp } from '~/types';
 import { formatDate, formatPrice } from '~/utils/global';
+import Collapsible from '~/components/ui/Collapsible.vue';
 
 // 註冊 ECharts 組件
 use([
