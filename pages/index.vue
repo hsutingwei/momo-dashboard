@@ -29,7 +29,6 @@
             <NuxtLink to="/products" class="block">
               <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.totalProducts) }}</p>
             </NuxtLink>
-            <p class="text-xs text-gray-500 mt-2">+12% from last month</p>
           </div>
   
           <div class="card">
@@ -37,13 +36,11 @@
             <NuxtLink to="/comments" class="block">
               <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.totalComments) }}</p>
             </NuxtLink>
-            <p class="text-xs text-gray-500 mt-2">+23% from last month</p>
           </div>
   
           <div class="card">
             <h3 class="text-sm font-medium text-gray-500 mb-3">Unique Keywords</h3>
             <p class="text-3xl font-bold text-gray-900">{{ formatNumber(stats.uniqueKeywords) }}</p>
-            <p class="text-xs text-gray-500 mt-2">+5% from last month</p>
           </div>
   
           <div class="card">
