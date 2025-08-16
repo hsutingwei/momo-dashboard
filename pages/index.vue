@@ -75,9 +75,15 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <KeywordRunsChart/>
-          <SalesChangesChart />
-          <BatchChangesChart />
+          <div class="cursor-pointer hover:shadow-lg transition-shadow" @click="openChartModal('keyword-runs')">
+            <KeywordRunsChart/>
+          </div>
+          <div class="cursor-pointer hover:shadow-lg transition-shadow" @click="openChartModal('sales-changes')">
+            <SalesChangesChart />
+          </div>
+          <div class="cursor-pointer hover:shadow-lg transition-shadow" @click="openChartModal('batch-changes')">
+            <BatchChangesChart />
+          </div>
         </div>
 
         <Collapsible title="TF-IDF" :default-open="false" class="card mb-6">
@@ -112,11 +118,24 @@
 
     <!-- 銷售下降商品 Modal -->
     <SalesDropsModal v-model="showSalesDropsModal" />
+
+    <!-- 圖表 Modal -->
+    <ChartModal v-model="showChartModal" :title="chartModalTitle">
+      <div v-if="activeChart === 'keyword-runs'">
+        <KeywordRunsChart />
+      </div>
+      <div v-else-if="activeChart === 'sales-changes'">
+        <SalesChangesChart />
+      </div>
+      <div v-else-if="activeChart === 'batch-changes'">
+        <BatchChangesChart />
+      </div>
+    </ChartModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useDashboardStats } from '../composables/useDashboardStats';
 import { useSalesDrops } from '../composables/useSalesDrops';
 import { formatNumber } from '~/utils/global';
@@ -126,16 +145,39 @@ import BatchChangesChart from '~/components/charts/BatchChangesChart.vue';
 import SalesDropsModal from '~/components/SalesDropsModal.vue';
 import Collapsible from '~/components/ui/Collapsible.vue';
 import TfidfWordCloud from '~/components/TfidfWordCloud.vue';
+import ChartModal from '~/components/ChartModal.vue';
 
 const { stats, error, refresh, pending } = useDashboardStats();
 const { count: salesDropsCount, loading: salesDropsLoading, error: salesDropsError, fetchCount } = useSalesDrops();
 
 // Modal 狀態
 const showSalesDropsModal = ref(false);
+const showChartModal = ref(false);
+const activeChart = ref<string>('');
+
+// 計算屬性
+const chartModalTitle = computed(() => {
+  switch (activeChart.value) {
+    case 'keyword-runs':
+      return '關鍵字批次分析';
+    case 'sales-changes':
+      return '銷售變化分析';
+    case 'batch-changes':
+      return '批次變化分析';
+    default:
+      return '圖表詳情';
+  }
+});
 
 // 打開銷售下降商品 Modal
 const openSalesDropsModal = () => {
   showSalesDropsModal.value = true;
+};
+
+// 打開圖表 Modal
+const openChartModal = (chartType: string) => {
+  activeChart.value = chartType;
+  showChartModal.value = true;
 };
 
 // 組件掛載時獲取銷售下降商品數量

@@ -72,7 +72,7 @@
         <!-- Charts Section -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <!-- 第一張圖：總評論數 -->
-          <div class="card">
+          <div class="card cursor-pointer hover:shadow-lg transition-shadow" @click="openChartModal('total-comments')">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">總評論數統計</h3>
             <div class="text-center py-8 w-full h-full flex flex-col items-center justify-center">
               <p class="text-4xl font-bold text-blue-600">{{ formatNumber(total) }}</p>
@@ -81,20 +81,24 @@
           </div>
 
           <!-- 第二張圖：關鍵字比較或產品趨勢 -->
-          <KeywordRunsChart 
-            v-if="!searchFilters.productId"
-            :keywords="''"
-            :from="searchFilters.captureTime"
-          />
-          <ProductRunsChart 
-            v-else
-            :product-id="searchFilters.productId"
-          />
+          <div class="cursor-pointer hover:shadow-lg transition-shadow" @click="openChartModal('runs-chart')">
+            <KeywordRunsChart 
+              v-if="!searchFilters.productId"
+              :keywords="''"
+              :from="searchFilters.captureTime"
+            />
+            <ProductRunsChart 
+              v-else
+              :product-id="searchFilters.productId"
+            />
+          </div>
 
           <!-- 第三張圖：銷售變化 -->
-          <SalesChangesChart 
-            :product-id="searchFilters.productId"
-          />
+          <div class="cursor-pointer hover:shadow-lg transition-shadow" @click="openChartModal('sales-changes')">
+            <SalesChangesChart 
+              :product-id="searchFilters.productId"
+            />
+          </div>
         </div>
 
         <!-- Comments Table -->
@@ -118,6 +122,30 @@
           :comment="selectedComment"
         />
 
+        <!-- 圖表 Modal -->
+        <ChartModal v-model="showChartModal" :title="chartModalTitle">
+          <div v-if="activeChart === 'total-comments'" class="text-center py-8">
+            <p class="text-6xl font-bold text-blue-600">{{ formatNumber(total) }}</p>
+            <p class="text-gray-600 mt-4 text-xl">總共評論數</p>
+          </div>
+          <div v-else-if="activeChart === 'runs-chart'">
+            <KeywordRunsChart 
+              v-if="!searchFilters.productId"
+              :keywords="''"
+              :from="searchFilters.captureTime"
+            />
+            <ProductRunsChart 
+              v-else
+              :product-id="searchFilters.productId"
+            />
+          </div>
+          <div v-else-if="activeChart === 'sales-changes'">
+            <SalesChangesChart 
+              :product-id="searchFilters.productId"
+            />
+          </div>
+        </ChartModal>
+
         <!-- Summary -->
         <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mt-6">
           <h3 class="text-blue-800 font-semibold mb-3">Comments Summary</h3>
@@ -134,7 +162,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useComments } from '../composables/useComments';
 import { useCommentStats } from '../composables/useCommentStats';
@@ -144,6 +172,7 @@ import KeywordRunsChart from '~/components/charts/KeywordRunsChart.vue';
 import ProductRunsChart from '~/components/charts/ProductRunsChart.vue';
 import SalesChangesChart from '~/components/charts/SalesChangesChart.vue';
 import CommentDetailModal from '~/components/CommentDetailModal.vue';
+import ChartModal from '~/components/ChartModal.vue';
 
 const route = useRoute();
 const { 
@@ -202,11 +231,33 @@ const handlePageChange = (page: number) => {
 // Modal states
 const showCommentModal = ref(false);
 const selectedComment = ref<Comment | null>(null);
+const showChartModal = ref(false);
+const activeChart = ref<string>('');
+
+// 計算屬性
+const chartModalTitle = computed(() => {
+  switch (activeChart.value) {
+    case 'total-comments':
+      return '總評論數統計';
+    case 'runs-chart':
+      return !searchFilters.value.productId ? '關鍵字批次分析' : '產品批次分析';
+    case 'sales-changes':
+      return '銷售變化分析';
+    default:
+      return '圖表詳情';
+  }
+});
 
 // 開啟評論詳細資訊
 const openCommentDetail = (comment: Comment) => {
   selectedComment.value = comment;
   showCommentModal.value = true;
+};
+
+// 打開圖表 Modal
+const openChartModal = (chartType: string) => {
+  activeChart.value = chartType;
+  showChartModal.value = true;
 };
 
 // 從 URL 參數初始化
