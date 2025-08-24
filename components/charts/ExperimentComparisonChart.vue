@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import * as echarts from 'echarts';
 import type { ExperimentRun } from '~/types';
 

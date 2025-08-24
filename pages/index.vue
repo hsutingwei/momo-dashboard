@@ -107,7 +107,7 @@
 
           <div v-else-if="experimentsError" class="text-center py-8">
             <p class="text-red-600 mb-4">{{ experimentsError }}</p>
-            <button @click="fetchExperiments" class="btn-primary">Retry</button>
+                         <button @click="fetchBatches" class="btn-primary">Retry</button>
           </div>
 
           <div v-else-if="experimentsBatches.length === 0" class="text-center py-8">
@@ -223,7 +223,7 @@ const { stats, error, refresh, pending } = useDashboardStats();
 const { count: salesDropsCount, loading: salesDropsLoading, error: salesDropsError, fetchCount } = useSalesDrops();
 
 // Experiments
-const { batches: experimentsBatches, fetchBatches: fetchExperiments } = useExperiments();
+const { batches: experimentsBatches, fetchBatches } = useExperiments();
 const experimentsLoading = ref(false);
 const experimentsError = ref<string | null>(null);
 
@@ -275,6 +275,6 @@ const navigateToExperiment = (batchId: string) => {
 // 組件掛載時獲取銷售下降商品數量
 onMounted(() => {
   fetchCount();
-  fetchExperiments();
+  fetchBatches();
 });
 </script> 

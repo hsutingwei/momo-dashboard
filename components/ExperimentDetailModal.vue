@@ -348,7 +348,7 @@ const {
   loading, 
   error, 
   fetchRunSummary, 
-  fetchRunFolds 
+  fetchRunFolds: fetchRunFoldsFromComposable
 } = useRunDetails();
 
 // Feature Analysis
@@ -376,7 +376,7 @@ const fetchRunFolds = async () => {
   try {
     runFoldsLoading.value = true;
     runFoldsError.value = null;
-    await fetchRunFolds(props.runId);
+    await fetchRunFoldsFromComposable(props.runId);
   } catch (err: any) {
     runFoldsError.value = err.message || 'Failed to fetch fold data';
   } finally {
@@ -387,10 +387,14 @@ const fetchRunFolds = async () => {
 const fetchFeatureData = async () => {
   if (!props.faBatchId) return;
   
-  await Promise.all([
-    fetchFeatureSummary(props.faBatchId),
-    fetchVisualizations(props.faBatchId)
-  ]);
+  try {
+    await Promise.all([
+      fetchFeatureSummary(props.faBatchId),
+      fetchVisualizations(props.faBatchId)
+    ]);
+  } catch (err: any) {
+    console.error('Error fetching feature data:', err);
+  }
 };
 
 // Watch for runId changes
