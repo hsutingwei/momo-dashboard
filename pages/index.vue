@@ -91,6 +91,80 @@
           </template>
           <TfidfWordCloud />
         </Collapsible>
+
+        <!-- ML Experiments Summary -->
+        <Collapsible title="ML Experiments" :default-open="false" class="card mb-6">
+          <template #icon>
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </template>
+          
+          <div v-if="experimentsLoading" class="flex items-center justify-center py-8">
+            <div class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2"></div>
+            <span class="text-gray-600">Loading experiments...</span>
+          </div>
+
+          <div v-else-if="experimentsError" class="text-center py-8">
+            <p class="text-red-600 mb-4">{{ experimentsError }}</p>
+            <button @click="fetchExperiments" class="btn-primary">Retry</button>
+          </div>
+
+          <div v-else-if="experimentsBatches.length === 0" class="text-center py-8">
+            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+            <p class="text-gray-500">No experiment batches available</p>
+          </div>
+
+          <div v-else class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div class="text-center p-4 bg-blue-50 rounded-lg">
+                <div class="text-2xl font-bold text-blue-600">{{ experimentsBatches.length }}</div>
+                <div class="text-sm text-gray-600">Analysis Batches</div>
+              </div>
+              <div class="text-center p-4 bg-green-50 rounded-lg">
+                <div class="text-2xl font-bold text-green-600">{{ totalExperiments }}</div>
+                <div class="text-sm text-gray-600">Total Experiments</div>
+              </div>
+              <div class="text-center p-4 bg-purple-50 rounded-lg">
+                <div class="text-2xl font-bold text-purple-600">{{ bestOverallAUC.toFixed(3) }}</div>
+                <div class="text-sm text-gray-600">Best Overall AUC</div>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h4 class="font-medium text-gray-900">Recent Analysis Batches</h4>
+              <div v-for="batch in experimentsBatches.slice(0, 3)" :key="batch.id" 
+                   class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                   @click="navigateToExperiment(batch.id)">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h5 class="font-medium text-gray-900">{{ batch.name }}</h5>
+                    <p class="text-sm text-gray-600">{{ batch.date }} • {{ batch.experiment_count }} experiments</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-bold text-blue-600">{{ batch.best_auc.toFixed(3) }}</div>
+                    <div class="text-xs text-gray-500">Best AUC</div>
+                  </div>
+                </div>
+                <div class="mt-2 flex items-center text-sm text-gray-500">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  Click to view details
+                </div>
+              </div>
+              
+              <div v-if="experimentsBatches.length > 3" class="text-center pt-2">
+                <NuxtLink to="/experiments" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                  View all {{ experimentsBatches.length }} batches →
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
+        </Collapsible>
   
         <!-- Status Card -->
         <div class="card mb-6">
@@ -135,6 +209,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useDashboardStats } from '../composables/useDashboardStats';
 import { useSalesDrops } from '../composables/useSalesDrops';
+import { useExperiments } from '../composables/useExperiments';
 import { formatNumber } from '~/utils/global';
 import KeywordRunsChart from '~/components/charts/KeywordRunsChart.vue';
 import SalesChangesChart from '~/components/charts/SalesChangesChart.vue';
@@ -146,6 +221,11 @@ import ChartModal from '~/components/ChartModal.vue';
 
 const { stats, error, refresh, pending } = useDashboardStats();
 const { count: salesDropsCount, loading: salesDropsLoading, error: salesDropsError, fetchCount } = useSalesDrops();
+
+// Experiments
+const { batches: experimentsBatches, fetchBatches: fetchExperiments } = useExperiments();
+const experimentsLoading = ref(false);
+const experimentsError = ref<string | null>(null);
 
 // Modal 狀態
 const showSalesDropsModal = ref(false);
@@ -166,6 +246,16 @@ const chartModalTitle = computed(() => {
   }
 });
 
+const totalExperiments = computed(() => 
+  experimentsBatches.value.reduce((sum, batch) => sum + batch.experiment_count, 0)
+);
+
+const bestOverallAUC = computed(() => 
+  experimentsBatches.value.length > 0 
+    ? Math.max(...experimentsBatches.value.map(batch => batch.best_auc))
+    : 0
+);
+
 // 打開銷售下降商品 Modal
 const openSalesDropsModal = () => {
   showSalesDropsModal.value = true;
@@ -177,8 +267,14 @@ const openChartModal = (chartType: string) => {
   showChartModal.value = true;
 };
 
+// 導航到實驗頁面
+const navigateToExperiment = (batchId: string) => {
+  navigateTo(`/experiments/${batchId}`);
+};
+
 // 組件掛載時獲取銷售下降商品數量
 onMounted(() => {
   fetchCount();
+  fetchExperiments();
 });
 </script> 

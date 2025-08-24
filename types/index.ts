@@ -197,3 +197,112 @@ export interface KeywordsResp {
   success: boolean;
   keywords: string[];
 } 
+
+// ML Experiment Dashboard Types
+export interface ExperimentRun {
+  code: string;
+  run_id: string;
+  algorithm: string;
+  fs_method: string;
+  cv_splits: number;
+  metrics: {
+    auc: number;
+    accuracy: number;
+    precision_1: number;
+    recall_1: number;
+    f1_1: number;
+    precision_0: number;
+    recall_0: number;
+    f1_0: number;
+  };
+}
+
+export interface ExperimentBatch {
+  fa_batch_id: string;
+  codes: ExperimentRun[];
+}
+
+export interface RunSummary {
+  run_id: string;
+  algorithm: string;
+  fs_method: string;
+  cv_splits: number;
+  cutoff_date: string;
+  hyperparams: Record<string, any>;
+  metrics: {
+    auc: number;
+    accuracy: number;
+    f1_macro: number;
+    f1_weighted: number;
+    precision_1: number;
+    recall_1: number;
+    f1_1: number;
+    precision_0: number;
+    recall_0: number;
+    f1_0: number;
+  };
+}
+
+export interface FoldMetrics {
+  fold: number;
+  auc: number;
+  accuracy: number;
+  precision_1: number;
+  recall_1: number;
+  f1_1: number;
+}
+
+export interface RunFolds {
+  run_id: string;
+  folds: FoldMetrics[];
+  stats: {
+    auc_mean: number;
+    auc_std: number;
+    f1_1_mean: number;
+    f1_1_std: number;
+  };
+}
+
+export interface FeatureAnalysisSummary {
+  batch_id: string;
+  data_overview: {
+    total_samples: number;
+    y1: number;
+    y0: number;
+    imbalance_ratio: string;
+    dense_features: number;
+    tfidf_features: number;
+  };
+  dense_feature_stats: Array<{
+    feature_name: string;
+    cohens_d: number;
+    mutual_info: number;
+    p_value: number;
+    overlap_coefficient: number;
+    is_significant: boolean;
+    has_high_separation: boolean;
+  }>;
+}
+
+export interface Visualization {
+  viz_type: 'pca' | 'tsne' | 'umap';
+  url: string;
+  separation_score?: number;
+  explained_var_1?: number;
+  explained_var_2?: number;
+  cumulative_var_2?: number;
+}
+
+export interface FeatureAnalysisVisualizations {
+  batch_id: string;
+  visualizations: Visualization[];
+}
+
+export interface AnalysisBatch {
+  id: string;
+  name: string;
+  date: string;
+  experiment_count: number;
+  best_auc: number;
+  best_precision: number;
+} 
