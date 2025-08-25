@@ -264,6 +264,10 @@ export interface RunFolds {
     auc_std: number;
     f1_1_mean: number;
     f1_1_std: number;
+    recall_1_mean: number;
+    recall_1_std: number;
+    prec_1_mean: number;
+    prec_1_std: number;
   };
 }
 

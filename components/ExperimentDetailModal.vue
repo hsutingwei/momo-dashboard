@@ -138,8 +138,7 @@
           <!-- Hyperparameters -->
           <div class="card">
             <h4 class="text-lg font-semibold mb-4">Hyperparameters</h4>
-            <pre class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">{{ JSON.stringify(runSummary.hyperparams, null, 2) }}
-  </pre>
+            <pre class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">{{ JSON.stringify(runSummary.hyperparams, null, 2) }}</pre>
           </div>
         </div>
 
@@ -162,18 +161,24 @@
             <!-- Fold Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div class="card text-center">
-                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean != null ?
-                  Number(runFolds.stats.auc_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean != null ? Number(runFolds.stats.auc_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">AUC Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std != null ?
-                  Number(runFolds.stats.auc_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std != null ? Number(runFolds.stats.auc_std).toFixed(3) : "-" }}</div>
               </div>
               <div class="card text-center">
-                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.f1_1_mean != null ?
-                  Number(runFolds.stats.f1_1_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-purple-600">{{ runFolds.stats.f1_1_mean != null ? Number(runFolds.stats.f1_1_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">F1 (y=1) Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std != null ?
-                  Number(runFolds.stats.f1_1_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std != null ? Number(runFolds.stats.f1_1_std).toFixed(3) : "-" }}</div>
+              </div>
+              <div class="card text-center">
+                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.recall_1_mean != null ? Number(runFolds.stats.recall_1_mean).toFixed(3) : "-" }}</div>
+                <div class="text-sm text-gray-600">Recall (y=1) Mean</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.recall_1_std != null ? Number(runFolds.stats.recall_1_std).toFixed(3) : "-" }}</div>
+              </div>
+              <div class="card text-center">
+                <div class="text-2xl font-bold text-green-600">{{ runFolds.stats.prec_1_mean != null ? Number(runFolds.stats.prec_1_mean).toFixed(3) : "-" }}</div>
+                <div class="text-sm text-gray-600">Precision (y=1) Mean</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.prec_1_std != null ? Number(runFolds.stats.prec_1_std).toFixed(3) : "-" }}</div>
               </div>
             </div>
 

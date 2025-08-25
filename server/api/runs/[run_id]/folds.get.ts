@@ -38,15 +38,25 @@ export default defineEventHandler(async (event): Promise<RunFolds> => {
     // 計算統計資訊
     const aucs = foldMetrics.map((f: any) => f.auc || 0);
     const f1s = foldMetrics.map((f: any) => f.f1_1 || 0);
+    const recall = foldMetrics.map((f: any) => f.recall_1 || 0);
+    const prec = foldMetrics.map((f: any) => f.precision_1 || 0);
 
-    const auc_mean = aucs.reduce((sum, val) => sum + val, 0) / aucs.length;
-    const f1_mean = f1s.reduce((sum, val) => sum + val, 0) / f1s.length;
+    const auc_mean = aucs.reduce((sum, val) => sum + Number(val), 0) / aucs.length;
+    const f1_mean = f1s.reduce((sum, val) => sum + Number(val), 0) / f1s.length;
+    const recall_mean = recall.reduce((sum, val) => sum + Number(val), 0) / recall.length;
+    const prec_mean = prec.reduce((sum, val) => sum + Number(val), 0) / prec.length;
 
     const auc_std = Math.sqrt(
-      aucs.reduce((sum, val) => sum + Math.pow(val - auc_mean, 2), 0) / aucs.length
+      aucs.reduce((sum, val) => sum + Math.pow(Number(val) - auc_mean, 2), 0) / aucs.length
     );
     const f1_std = Math.sqrt(
-      f1s.reduce((sum, val) => sum + Math.pow(val - f1_mean, 2), 0) / f1s.length
+      f1s.reduce((sum, val) => sum + Math.pow(Number(val) - f1_mean, 2), 0) / f1s.length
+    );
+    const recall_std = Math.sqrt(
+      recall.reduce((sum, val) => sum + Math.pow(Number(val) - recall_mean, 2), 0) / recall.length
+    );
+    const prec_std = Math.sqrt(
+      prec.reduce((sum, val) => sum + Math.pow(Number(val) - prec_mean, 2), 0) / prec.length
     );
 
     return {
@@ -63,7 +73,11 @@ export default defineEventHandler(async (event): Promise<RunFolds> => {
         auc_mean,
         auc_std,
         f1_1_mean: f1_mean,
-        f1_1_std: f1_std
+        f1_1_std: f1_std,
+        recall_1_mean: recall_mean,
+        recall_1_std: recall_std,
+        prec_1_mean: prec_mean,
+        prec_1_std: prec_std
       }
     };
 
