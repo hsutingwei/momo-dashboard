@@ -19,11 +19,11 @@
       </div>
     </div>
 
-    <div v-if="loading" class="flex items-center justify-center h-64">
+    <div v-if="loading" class="flex items-center justify-center h-full">
       <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
     </div>
 
-    <div v-else-if="error" class="flex items-center justify-center h-64">
+    <div v-else-if="error" class="flex items-center justify-center h-full">
       <div class="text-center">
         <p class="text-red-600 mb-2">{{ error }}</p>
         <button @click="$emit('retry')" class="btn-primary">
@@ -32,11 +32,11 @@
       </div>
     </div>
 
-    <div v-else-if="!hasData" class="flex items-center justify-center h-64">
+    <div v-else-if="!hasData" class="flex items-center justify-center h-full">
       <p class="text-gray-500">No data available</p>
     </div>
 
-    <div v-else ref="chartRef" class="h-64"></div>
+    <div v-else ref="chartRef" class="h-full"></div>
   </div>
 </template>
 
@@ -129,8 +129,8 @@ const initChart = () => {
       type: 'category',
       data: chartData.value.map(item => item.name),
       axisLabel: {
-        rotate: 45,
-        fontSize: 10
+        fontSize: 10,
+        formatter: (value: string) => value.length > 10 ? value.slice(0, 10) + '...' : value
       }
     },
     yAxis: {
