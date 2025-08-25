@@ -46,12 +46,12 @@ export default defineEventHandler(async (event): Promise<FeatureAnalysisSummary>
     return {
       batch_id: faBatchId,
       data_overview: {
-        total_samples: summaryJson?.data_summary?.total_samples || 0,
-        y1: summaryJson?.data_summary?.positive_samples || 0,
-        y0: summaryJson?.data_summary?.negative_samples || 0,
-        imbalance_ratio: summaryJson?.data_summary?.imbalance_ratio || '0:0',
-        dense_features: summaryJson?.data_summary?.dense_features_count || 0,
-        tfidf_features: summaryJson?.data_summary?.tfidf_features_count || 0
+        total_samples: summaryJson?.total_samples || 0,
+        y1: summaryJson?.positive_samples || 0,
+        y0: summaryJson?.negative_samples || 0,
+        imbalance_ratio: summaryJson?.imbalance_ratio || '0:0',
+        dense_features: summaryJson?.dense_features_count || 0,
+        tfidf_features: summaryJson?.tfidf_features_count || 0
       },
       dense_feature_stats: featureStats.map((stat: any) => ({
         feature_name: stat.feature_name,

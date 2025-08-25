@@ -238,19 +238,19 @@
               <h4 class="text-lg font-semibold mb-4">Data Overview</h4>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-blue-600">{{ featureSummary.data_overview.total_samples }}</div>
+                  <div class="text-2xl font-bold text-blue-600">{{ formatNumber(featureSummary.data_overview.total_samples) }}</div>
                   <div class="text-sm text-gray-600">Total Samples</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-green-600">{{ featureSummary.data_overview.y1 }}</div>
+                  <div class="text-2xl font-bold text-green-600">{{ formatNumber(featureSummary.data_overview.y1) }}</div>
                   <div class="text-sm text-gray-600">Positive (y=1)</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-red-600">{{ featureSummary.data_overview.y0 }}</div>
+                  <div class="text-2xl font-bold text-red-600">{{ formatNumber(featureSummary.data_overview.y0) }}</div>
                   <div class="text-sm text-gray-600">Negative (y=0)</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ featureSummary.data_overview.imbalance_ratio }}
+                  <div class="text-2xl font-bold text-purple-600">{{ formatNumber(featureSummary.data_overview.imbalance_ratio, 3) }}
                   </div>
                   <div class="text-sm text-gray-600">Imbalance Ratio</div>
                 </div>
