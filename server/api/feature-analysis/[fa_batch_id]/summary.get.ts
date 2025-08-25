@@ -14,7 +14,7 @@ export default defineEventHandler(async (event): Promise<FeatureAnalysisSummary>
   try {
     // 獲取批次資訊
     const batchDataSql = `
-      SELECT summary_json FROM fa_batches WHERE analysis_id = $1
+      SELECT summary_json FROM fa_data_summary WHERE analysis_id = $1
     `;
     const batchData = await query(batchDataSql, [faBatchId]);
 

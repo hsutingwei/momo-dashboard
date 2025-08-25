@@ -277,10 +277,10 @@
                     <tr v-for="feature in featureSummary.dense_feature_stats" :key="feature.feature_name"
                       class="border-b">
                       <td class="py-2 font-medium">{{ feature.feature_name }}</td>
-                      <td class="py-2 text-center">{{ feature.cohens_d.toFixed(3) }}</td>
-                      <td class="py-2 text-center">{{ feature.mutual_info.toFixed(3) }}</td>
-                      <td class="py-2 text-center">{{ feature.p_value.toExponential(2) }}</td>
-                      <td class="py-2 text-center">{{ feature.overlap_coefficient.toFixed(3) }}</td>
+                      <td class="py-2 text-center">{{ feature.cohens_d != null ? Number(feature.cohens_d).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ feature.mutual_info != null ? Number(feature.mutual_info).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ feature.p_value != null ? Number(feature.p_value).toExponential(2) : "-" }}</td>
+                      <td class="py-2 text-center">{{ feature.overlap_coefficient != null ? Number(feature.overlap_coefficient).toFixed(3) : "-" }}</td>
                       <td class="py-2 text-center">
                         <span :class="feature.is_significant ? 'text-green-600' : 'text-red-600'">
                           {{ feature.is_significant ? 'Yes' : 'No' }}
@@ -305,13 +305,13 @@
                   <h5 class="font-medium mb-2 capitalize">{{ viz.viz_type }} Visualization</h5>
                   <div class="flex items-center space-x-4 mb-4">
                     <span v-if="viz.separation_score" class="text-sm text-gray-600">
-                      Separation Score: {{ viz.separation_score.toFixed(3) }}
+                      Separation Score: {{ viz.separation_score != null ? Number(viz.separation_score).toFixed(3) : "-" }}
                     </span>
                     <span v-if="viz.explained_var_1" class="text-sm text-gray-600">
-                      Explained Var 1: {{ (viz.explained_var_1 * 100).toFixed(1) }}%
+                      Explained Var 1: {{ viz.explained_var_1 != null ? Number(viz.explained_var_1 * 100).toFixed(1) : "-" }}%
                     </span>
                     <span v-if="viz.explained_var_2" class="text-sm text-gray-600">
-                      Explained Var 2: {{ (viz.explained_var_2 * 100).toFixed(1) }}%
+                      Explained Var 2: {{ viz.explained_var_2 != null ? Number(viz.explained_var_2 * 100).toFixed(1) : "-" }}%
                     </span>
                   </div>
                   <div class="flex justify-center">
