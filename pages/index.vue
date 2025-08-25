@@ -223,9 +223,7 @@ const { stats, error, refresh, pending } = useDashboardStats();
 const { count: salesDropsCount, loading: salesDropsLoading, error: salesDropsError, fetchCount } = useSalesDrops();
 
 // Experiments
-const { batches: experimentsBatches, fetchBatches } = useExperiments();
-const experimentsLoading = ref(false);
-const experimentsError = ref<string | null>(null);
+const { batches: experimentsBatches, loading: experimentsLoading, error: experimentsError, fetchBatches } = useExperiments();
 
 // Modal 狀態
 const showSalesDropsModal = ref(false);

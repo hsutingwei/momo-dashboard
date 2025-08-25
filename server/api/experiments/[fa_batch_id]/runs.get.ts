@@ -56,6 +56,15 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
     }
 
     const runIds = relatedRuns.map((r: any) => r.run_id);
+    
+    // 檢查是否有 run_ids
+    if (runIds.length === 0) {
+      return {
+        fa_batch_id: faBatchId,
+        codes: []
+      };
+    }
+    
     const runPlaceholders = runIds.map((_, i) => `$${i + 1}`).join(',');
 
     // 4. 獲取算法和指標資訊

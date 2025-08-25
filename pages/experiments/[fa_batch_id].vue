@@ -206,6 +206,8 @@
 import { ref, onMounted } from 'vue';
 import { useExperiments } from '~/composables/useExperiments';
 import type { ExperimentRun } from '~/types';
+import ExperimentDetailModal from '~/components/ExperimentDetailModal.vue';
+import ExperimentComparisonChart from '~/components/charts/ExperimentComparisonChart.vue';
 
 const route = useRoute();
 const faBatchId = route.params.fa_batch_id as string;

@@ -310,6 +310,7 @@
 import { ref, computed, watch } from 'vue';
 import { useRunDetails, useFeatureAnalysis } from '~/composables/useExperiments';
 import type { ExperimentRun } from '~/types';
+import Modal from '~/components/ui/Modal.vue';
 
 interface Props {
   modelValue: boolean;
