@@ -50,10 +50,10 @@ export function formatNumber(value: number | string | null | undefined, decimals
   const decimalPart = parts[1];
   
   // 為整數部分添加千分位符號
-  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const formattedInteger = integerPart?.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   
   // 組合結果
-  return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+  return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger ?? '–';
 }
 
 /**
