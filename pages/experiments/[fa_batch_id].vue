@@ -106,7 +106,9 @@
             <div class="space-y-4">
               <div v-for="experiment in experimentData?.codes" :key="experiment.code" class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" @click="openExperimentDetail(experiment)">
                 <div class="flex items-center justify-between mb-2">
-                  <h4 class="font-medium text-gray-900">{{ experiment.code }}</h4>
+                  <Tooltip :content="experiment.mode_desc_short" position="top">
+                    <h4 class="font-medium text-gray-900 cursor-help">{{ experiment.code }}</h4>
+                  </Tooltip>
                   <span class="text-sm text-gray-500">{{ experiment.algorithm }}</span>
                 </div>
                 <div class="grid grid-cols-4 gap-2 text-sm">
@@ -152,7 +154,11 @@
               </thead>
               <tbody>
                 <tr v-for="experiment in experimentData?.codes" :key="experiment.code" class="border-b hover:bg-gray-50">
-                  <td class="py-3 px-4 font-medium text-gray-900">{{ experiment.code }}</td>
+                  <td class="py-3 px-4 font-medium text-gray-900">
+                    <Tooltip :content="experiment.mode_desc_short" position="top">
+                      <span class="cursor-help">{{ experiment.code }}</span>
+                    </Tooltip>
+                  </td>
                   <td class="py-3 px-4 text-gray-700">{{ experiment.algorithm }}</td>
                   <td class="py-3 px-4 text-gray-700">{{ experiment.fs_method }}</td>
                   <td class="py-3 px-4 text-center text-gray-700">{{ experiment.cv_splits }}</td>
@@ -208,6 +214,7 @@ import { useExperiments } from '~/composables/useExperiments';
 import type { ExperimentRun } from '~/types';
 import ExperimentDetailModal from '~/components/ExperimentDetailModal.vue';
 import ExperimentComparisonChart from '~/components/charts/ExperimentComparisonChart.vue';
+import Tooltip from '~/components/ui/Tooltip.vue';
 
 const route = useRoute();
 const faBatchId = route.params.fa_batch_id as string;

@@ -215,6 +215,8 @@ export interface ExperimentRun {
     recall_0: number;
     f1_0: number;
   };
+  mode_desc_short: string;
+  mode_desc_long: string;
 }
 
 export interface ExperimentBatch {

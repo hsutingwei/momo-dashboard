@@ -71,6 +71,8 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
     const runsDataSql = `
       SELECT 
         r.run_id,
+        mm.mode_desc_short,
+        mm.mode_desc_long,
         a.algorithm,
         a.fs_method,
         r.cv_splits,
@@ -87,6 +89,7 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
       FROM ml_runs r
       LEFT JOIN ml_run_algorithms a ON a.run_id = r.run_id
       LEFT JOIN ml_run_summary s ON s.run_id = r.run_id
+      LEFT JOIN ml_modes mm ON mm.id = r.mode_id 
       WHERE r.run_id IN (${runPlaceholders})
     `;
     const runsData = await query(runsDataSql, runIds);
@@ -102,6 +105,8 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
       return {
         code: relatedRun.code,
         run_id: relatedRun.run_id,
+        mode_desc_short: runData.mode_desc_short || 'Unknown',
+        mode_desc_long: runData.mode_desc_long || 'Unknown',
         algorithm: runData.algorithm || 'Unknown',
         fs_method: runData.fs_method || 'Unknown',
         cv_splits: runData.cv_splits || 0,
