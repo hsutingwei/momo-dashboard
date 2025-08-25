@@ -16,18 +16,13 @@
     <div v-else class="space-y-6">
       <!-- Tabs -->
       <div class="border-b border-gray-200">
-        <nav class="-mb-px flex space-x-8">
-          <button
-            v-for="tab in tabs"
-            :key="tab.id"
-            @click="activeTab = tab.id"
-            :class="[
-              'py-2 px-1 border-b-2 font-medium text-sm',
-              activeTab === tab.id
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            ]"
-          >
+        <nav class="-mb-px mx-4 flex space-x-8">
+          <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="[
+            'py-2 px-1 border-b-2 font-medium text-sm',
+            activeTab === tab.id
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          ]">
             {{ tab.name }}
           </button>
         </nav>
@@ -37,6 +32,16 @@
       <div class="min-h-96">
         <!-- Overview Tab -->
         <div v-if="activeTab === 'overview'" class="space-y-6">
+          <Collapsible title="詳細說明" :default-open="false" class="card mb-6">
+            <template #icon>
+              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                </path>
+              </svg>
+            </template>
+            <span class="text-gray-600">{{ runSummary.mode_desc_long }}</span>
+          </Collapsible>
           <!-- Run Summary -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="card">
@@ -69,15 +74,18 @@
                   <div class="text-sm text-gray-600">AUC</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-green-600">{{ Number(runSummary.metrics.accuracy).toFixed(3) }}</div>
+                  <div class="text-2xl font-bold text-green-600">{{ Number(runSummary.metrics.accuracy).toFixed(3) }}
+                  </div>
                   <div class="text-sm text-gray-600">Accuracy</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ Number(runSummary.metrics.f1_macro).toFixed(3) }}</div>
+                  <div class="text-2xl font-bold text-purple-600">{{ Number(runSummary.metrics.f1_macro).toFixed(3) }}
+                  </div>
                   <div class="text-sm text-gray-600">F1 Macro</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-indigo-600">{{ Number(runSummary.metrics.f1_weighted).toFixed(3) }}</div>
+                  <div class="text-2xl font-bold text-indigo-600">{{ Number(runSummary.metrics.f1_weighted).toFixed(3)
+                  }}</div>
                   <div class="text-sm text-gray-600">F1 Weighted</div>
                 </div>
               </div>
@@ -90,11 +98,13 @@
               <h4 class="text-lg font-semibold mb-4 text-orange-600">Class 1 (Positive) Metrics</h4>
               <div class="grid grid-cols-3 gap-4">
                 <div class="text-center">
-                  <div class="text-xl font-bold text-orange-600">{{ Number(runSummary.metrics.precision_1).toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-orange-600">{{ Number(runSummary.metrics.precision_1).toFixed(3) }}
+                  </div>
                   <div class="text-sm text-gray-600">Precision</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-xl font-bold text-orange-600">{{ Number(runSummary.metrics.recall_1).toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-orange-600">{{ Number(runSummary.metrics.recall_1).toFixed(3) }}
+                  </div>
                   <div class="text-sm text-gray-600">Recall</div>
                 </div>
                 <div class="text-center">
@@ -108,11 +118,13 @@
               <h4 class="text-lg font-semibold mb-4 text-gray-600">Class 0 (Negative) Metrics</h4>
               <div class="grid grid-cols-3 gap-4">
                 <div class="text-center">
-                  <div class="text-xl font-bold text-gray-600">{{ Number(runSummary.metrics.precision_0).toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-gray-600">{{ Number(runSummary.metrics.precision_0).toFixed(3) }}
+                  </div>
                   <div class="text-sm text-gray-600">Precision</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-xl font-bold text-gray-600">{{ Number(runSummary.metrics.recall_0).toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-gray-600">{{ Number(runSummary.metrics.recall_0).toFixed(3) }}
+                  </div>
                   <div class="text-sm text-gray-600">Recall</div>
                 </div>
                 <div class="text-center">
@@ -126,7 +138,8 @@
           <!-- Hyperparameters -->
           <div class="card">
             <h4 class="text-lg font-semibold mb-4">Hyperparameters</h4>
-            <pre class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">{{ JSON.stringify(runSummary.hyperparams, null, 2) }}</pre>
+            <pre class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">{{ JSON.stringify(runSummary.hyperparams, null, 2) }}
+  </pre>
           </div>
         </div>
 
@@ -149,14 +162,18 @@
             <!-- Fold Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div class="card text-center">
-                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean != null ? Number(runFolds.stats.auc_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean != null ?
+                  Number(runFolds.stats.auc_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">AUC Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std != null ? Number(runFolds.stats.auc_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std != null ?
+                  Number(runFolds.stats.auc_std).toFixed(3) : "-" }}</div>
               </div>
               <div class="card text-center">
-                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.f1_1_mean != null ? Number(runFolds.stats.f1_1_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.f1_1_mean != null ?
+                  Number(runFolds.stats.f1_1_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">F1 (y=1) Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std != null ? Number(runFolds.stats.f1_1_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std != null ?
+                  Number(runFolds.stats.f1_1_std).toFixed(3) : "-" }}</div>
               </div>
             </div>
 
@@ -179,9 +196,13 @@
                     <tr v-for="fold in runFolds.folds" :key="fold.fold" class="border-b">
                       <td class="py-2 font-medium">{{ fold.fold }}</td>
                       <td class="py-2 text-center">{{ fold.auc != null ? Number(fold.auc).toFixed(3) : "-" }}</td>
-                      <td class="py-2 text-center">{{ fold.accuracy != null ? Number(fold.accuracy).toFixed(3) : "-" }}</td>
-                      <td class="py-2 text-center">{{ fold.precision_1 != null ? Number(fold.precision_1).toFixed(3) : "-" }}</td>
-                      <td class="py-2 text-center">{{ fold.recall_1 != null ? Number(fold.recall_1).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ fold.accuracy != null ? Number(fold.accuracy).toFixed(3) : "-" }}
+                      </td>
+                      <td class="py-2 text-center">{{ fold.precision_1 != null ? Number(fold.precision_1).toFixed(3) :
+                        "-" }}
+                      </td>
+                      <td class="py-2 text-center">{{ fold.recall_1 != null ? Number(fold.recall_1).toFixed(3) : "-" }}
+                      </td>
                       <td class="py-2 text-center">{{ fold.f1_1 != null ? Number(fold.f1_1).toFixed(3) : "-" }}</td>
                     </tr>
                   </tbody>
@@ -224,7 +245,8 @@
                   <div class="text-sm text-gray-600">Negative (y=0)</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ featureSummary.data_overview.imbalance_ratio }}</div>
+                  <div class="text-2xl font-bold text-purple-600">{{ featureSummary.data_overview.imbalance_ratio }}
+                  </div>
                   <div class="text-sm text-gray-600">Imbalance Ratio</div>
                 </div>
               </div>
@@ -247,7 +269,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="feature in featureSummary.dense_feature_stats" :key="feature.feature_name" class="border-b">
+                    <tr v-for="feature in featureSummary.dense_feature_stats" :key="feature.feature_name"
+                      class="border-b">
                       <td class="py-2 font-medium">{{ feature.feature_name }}</td>
                       <td class="py-2 text-center">{{ feature.cohens_d.toFixed(3) }}</td>
                       <td class="py-2 text-center">{{ feature.mutual_info.toFixed(3) }}</td>
@@ -311,6 +334,7 @@ import { ref, computed, watch } from 'vue';
 import { useRunDetails, useFeatureAnalysis } from '~/composables/useExperiments';
 import type { ExperimentRun } from '~/types';
 import Modal from '~/components/ui/Modal.vue';
+import Collapsible from '~/components/ui/Collapsible.vue';
 
 interface Props {
   modelValue: boolean;
@@ -343,23 +367,23 @@ const modalTitle = computed(() => {
 });
 
 // Run Details
-const { 
-  runSummary, 
-  runFolds, 
-  loading, 
-  error, 
-  fetchRunSummary, 
+const {
+  runSummary,
+  runFolds,
+  loading,
+  error,
+  fetchRunSummary,
   fetchRunFolds: fetchRunFoldsFromComposable
 } = useRunDetails();
 
 // Feature Analysis
-const { 
-  featureSummary, 
-  visualizations, 
-  loading: featureLoading, 
-  error: featureError, 
-  fetchFeatureSummary, 
-  fetchVisualizations 
+const {
+  featureSummary,
+  visualizations,
+  loading: featureLoading,
+  error: featureError,
+  fetchFeatureSummary,
+  fetchVisualizations
 } = useFeatureAnalysis();
 
 const runFoldsLoading = ref(false);
@@ -373,7 +397,7 @@ const retry = () => {
 
 const fetchRunFolds = async () => {
   if (!props.runId) return;
-  
+
   try {
     runFoldsLoading.value = true;
     runFoldsError.value = null;
@@ -387,7 +411,7 @@ const fetchRunFolds = async () => {
 
 const fetchFeatureData = async () => {
   if (!props.faBatchId) return;
-  
+
   try {
     await Promise.all([
       fetchFeatureSummary(props.faBatchId),

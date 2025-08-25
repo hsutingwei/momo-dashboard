@@ -226,6 +226,8 @@ export interface ExperimentBatch {
 
 export interface RunSummary {
   run_id: string;
+  mode_desc_short: string;
+  mode_desc_long: string;
   algorithm: string;
   fs_method: string;
   cv_splits: number;

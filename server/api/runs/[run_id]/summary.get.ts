@@ -16,6 +16,8 @@ export default defineEventHandler(async (event): Promise<RunSummary> => {
     const runDataSql = `
       SELECT 
         r.run_id,
+        mm.mode_desc_short,
+        mm.mode_desc_long,
         r.date_cutoff,
         a.algorithm,
         a.fs_method,
@@ -33,7 +35,8 @@ export default defineEventHandler(async (event): Promise<RunSummary> => {
         s.f1_0_mean
       FROM ml_runs r
       LEFT JOIN ml_run_algorithms a ON a.run_id = r.run_id
-      LEFT JOIN ml_run_summary s ON s.run_id = r.run_id
+      LEFT JOIN ml_run_summary s ON s.run_id = r.run_id and a.id = s.algorithm_id 
+      LEFT JOIN ml_modes mm ON mm.id = r.mode_id
       WHERE r.run_id = $1
     `;
     
@@ -50,6 +53,8 @@ export default defineEventHandler(async (event): Promise<RunSummary> => {
 
     return {
       run_id: runId,
+      mode_desc_short: data.mode_desc_short || 'Unknown',
+      mode_desc_long: data.mode_desc_long || 'Unknown',
       algorithm: data.algorithm || 'Unknown',
       fs_method: data.fs_method || 'Unknown',
       cv_splits: data.cv_splits || 0,
