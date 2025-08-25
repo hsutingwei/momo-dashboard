@@ -3,7 +3,7 @@ import type { ExperimentBatch } from '~/types';
 
 export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
   const faBatchId = getRouterParam(event, 'fa_batch_id');
-  
+
   if (!faBatchId) {
     throw createError({
       statusCode: 400,
@@ -56,7 +56,7 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
     }
 
     const runIds = relatedRuns.map((r: any) => r.run_id);
-    
+
     // 檢查是否有 run_ids
     if (runIds.length === 0) {
       return {
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
         codes: []
       };
     }
-    
+
     const runPlaceholders = runIds.map((_, i) => `$${i + 1}`).join(',');
 
     // 4. 獲取算法和指標資訊
@@ -88,40 +88,40 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
         s.f1_0_mean
       FROM ml_runs r
       LEFT JOIN ml_run_algorithms a ON a.run_id = r.run_id
-      LEFT JOIN ml_run_summary s ON s.run_id = r.run_id
+      LEFT JOIN ml_run_summary s ON s.run_id = r.run_id and a.id = s.algorithm_id 
       LEFT JOIN ml_modes mm ON mm.id = r.mode_id 
       WHERE r.run_id IN (${runPlaceholders})
     `;
     const runsData = await query(runsDataSql, runIds);
 
     // 5. 組裝結果
-    const codesWithRuns = relatedRuns.map((relatedRun: any) => {
-      const runData = runsData.find((r: any) => r.run_id === relatedRun.run_id);
+    const codesWithRuns = relatedRuns.flatMap((relatedRun: any) => {
+      // 取出所有 run_id 相同的紀錄
+      const matches = runsData.filter((r: any) => r.run_id === relatedRun.run_id);
+      if (!matches.length) return []; // 沒有就回傳空陣列給 flatMap
 
-      if (!runData) {
-        return null;
-      }
-
-      return {
+      // 對每一筆 matches 產生對應輸出
+      return matches.map((runData: any) => ({
         code: relatedRun.code,
         run_id: relatedRun.run_id,
-        mode_desc_short: runData.mode_desc_short || 'Unknown',
-        mode_desc_long: runData.mode_desc_long || 'Unknown',
-        algorithm: runData.algorithm || 'Unknown',
-        fs_method: runData.fs_method || 'Unknown',
-        cv_splits: runData.cv_splits || 0,
+        mode_desc_short: runData.mode_desc_short ?? 'Unknown',
+        mode_desc_long: runData.mode_desc_long ?? 'Unknown',
+        algorithm: runData.algorithm ?? 'Unknown',
+        fs_method: runData.fs_method ?? 'Unknown',
+        cv_splits: runData.cv_splits ?? 0,
         metrics: {
-          auc: runData.auc_mean || 0,
-          accuracy: runData.accuracy_mean || 0,
-          precision_1: runData.precision_1_mean || 0,
-          recall_1: runData.recall_1_mean || 0,
-          f1_1: runData.f1_1_mean || 0,
-          precision_0: runData.precision_0_mean || 0,
-          recall_0: runData.recall_0_mean || 0,
-          f1_0: runData.f1_0_mean || 0
-        }
-      };
-    }).filter((item): item is NonNullable<typeof item> => item !== null);
+          auc: runData.auc_mean ?? 0,
+          accuracy: runData.accuracy_mean ?? 0,
+          precision_1: runData.precision_1_mean ?? 0,
+          recall_1: runData.recall_1_mean ?? 0,
+          f1_1: runData.f1_1_mean ?? 0,
+          precision_0: runData.precision_0_mean ?? 0,
+          recall_0: runData.recall_0_mean ?? 0,
+          f1_0: runData.f1_0_mean ?? 0,
+        },
+      }));
+    });
+
 
     return {
       fa_batch_id: faBatchId,

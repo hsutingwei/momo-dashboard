@@ -118,15 +118,15 @@
                   </div>
                   <div class="text-center">
                     <div class="font-medium text-green-600">{{ experiment.metrics.precision_1 != null ? Number(experiment.metrics.precision_1).toFixed(3) : "-" }}</div>
-                    <div class="text-gray-500">Precision</div>
+                    <div class="text-gray-500">Precision(y=1)</div>
                   </div>
                   <div class="text-center">
                     <div class="font-medium text-orange-600">{{ experiment.metrics.recall_1 != null ? Number(experiment.metrics.recall_1).toFixed(3) : "-" }}</div>
-                    <div class="text-gray-500">Recall</div>
+                    <div class="text-gray-500">Recall(y=1)</div>
                   </div>
                   <div class="text-center">
                     <div class="font-medium text-purple-600">{{ experiment.metrics.f1_1 != null ? Number(experiment.metrics.f1_1).toFixed(3) : "-" }}</div>
-                    <div class="text-gray-500">F1</div>
+                    <div class="text-gray-500">F1(y=1)</div>
                   </div>
                 </div>
               </div>
