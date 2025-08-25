@@ -114,7 +114,7 @@ const initChart = () => {
         return `
           <div class="p-2">
             <div class="font-semibold">${data.name}</div>
-            <div>${availableMetrics.find(m => m.value === selectedMetric.value)?.label}: ${data.value.toFixed(3)}</div>
+            <div>${availableMetrics.find(m => m.value === selectedMetric.value)?.label}: ${Number(data.value).toFixed(3)}</div>
           </div>
         `;
       }

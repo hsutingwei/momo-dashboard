@@ -73,7 +73,7 @@ export default defineEventHandler(async (event): Promise<ExperimentBatch> => {
         r.run_id,
         a.algorithm,
         a.fs_method,
-        a.cv_splits,
+        r.cv_splits,
         s.auc_mean,
         s.accuracy_mean,
         s.f1_macro_mean,
