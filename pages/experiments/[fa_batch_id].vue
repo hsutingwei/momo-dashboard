@@ -52,7 +52,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-600">Best AUC</p>
-                <p class="text-3xl font-bold text-blue-600">{{ bestAUC.toFixed(3) }}</p>
+                <p class="text-3xl font-bold text-blue-600">{{ bestAUC != null ? Number(bestAUC).toFixed(3) : "-" }}</p>
               </div>
               <div class="p-2 bg-blue-100 rounded-lg">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +66,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-600">Best Precision (y=1)</p>
-                <p class="text-3xl font-bold text-green-600">{{ bestPrecision.toFixed(3) }}</p>
+                <p class="text-3xl font-bold text-green-600">{{ bestPrecision != null ? Number(bestPrecision).toFixed(3) : "-" }}</p>
               </div>
               <div class="p-2 bg-green-100 rounded-lg">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +80,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-600">Best F1 (y=1)</p>
-                <p class="text-3xl font-bold text-purple-600">{{ bestF1.toFixed(3) }}</p>
+                <p class="text-3xl font-bold text-purple-600">{{ bestF1 != null ? Number(bestF1).toFixed(3) : "-" }}</p>
               </div>
               <div class="p-2 bg-purple-100 rounded-lg">
                 <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,19 +111,19 @@
                 </div>
                 <div class="grid grid-cols-4 gap-2 text-sm">
                   <div class="text-center">
-                    <div class="font-medium text-blue-600">{{ Number(experiment.metrics.auc).toFixed(3) }}</div>
+                    <div class="font-medium text-blue-600">{{ experiment.metrics.auc != null ? Number(experiment.metrics.auc).toFixed(3) : "-" }}</div>
                     <div class="text-gray-500">AUC</div>
                   </div>
                   <div class="text-center">
-                    <div class="font-medium text-green-600">{{ Number(experiment.metrics.precision_1).toFixed(3) }}</div>
+                    <div class="font-medium text-green-600">{{ experiment.metrics.precision_1 != null ? Number(experiment.metrics.precision_1).toFixed(3) : "-" }}</div>
                     <div class="text-gray-500">Precision</div>
                   </div>
                   <div class="text-center">
-                    <div class="font-medium text-orange-600">{{ Number(experiment.metrics.recall_1).toFixed(3) }}</div>
+                    <div class="font-medium text-orange-600">{{ experiment.metrics.recall_1 != null ? Number(experiment.metrics.recall_1).toFixed(3) : "-" }}</div>
                     <div class="text-gray-500">Recall</div>
                   </div>
                   <div class="text-center">
-                    <div class="font-medium text-purple-600">{{ Number(experiment.metrics.f1_1).toFixed(3) }}</div>
+                    <div class="font-medium text-purple-600">{{ experiment.metrics.f1_1 != null ? Number(experiment.metrics.f1_1).toFixed(3) : "-" }}</div>
                     <div class="text-gray-500">F1</div>
                   </div>
                 </div>
@@ -157,16 +157,16 @@
                   <td class="py-3 px-4 text-gray-700">{{ experiment.fs_method }}</td>
                   <td class="py-3 px-4 text-center text-gray-700">{{ experiment.cv_splits }}</td>
                   <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-blue-600">{{ Number(experiment.metrics.auc).toFixed(3) }}</span>
+                    <span class="font-medium text-blue-600">{{ experiment.metrics.auc != null ? Number(experiment.metrics.auc).toFixed(3) : "-" }}</span>
                   </td>
                   <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-green-600">{{ Number(experiment.metrics.precision_1).toFixed(3) }}</span>
+                    <span class="font-medium text-green-600">{{ experiment.metrics.precision_1 != null ? Number(experiment.metrics.precision_1).toFixed(3) : "-" }}</span>
                   </td>
                   <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-orange-600">{{ Number(experiment.metrics.recall_1).toFixed(3) }}</span>
+                    <span class="font-medium text-orange-600">{{ experiment.metrics.recall_1 != null ? Number(experiment.metrics.recall_1).toFixed(3) : "-" }}</span>
                   </td>
                   <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-purple-600">{{ Number(experiment.metrics.f1_1).toFixed(3) }}</span>
+                    <span class="font-medium text-purple-600">{{ experiment.metrics.f1_1 != null ? Number(experiment.metrics.f1_1).toFixed(3) : "-" }}</span>
                   </td>
                   <td class="py-3 px-4 text-center">
                     <button

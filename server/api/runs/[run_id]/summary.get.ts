@@ -19,7 +19,7 @@ export default defineEventHandler(async (event): Promise<RunSummary> => {
         r.date_cutoff,
         a.algorithm,
         a.fs_method,
-        a.cv_splits,
+        r.cv_splits,
         a.hyperparams,
         s.auc_mean,
         s.accuracy_mean,

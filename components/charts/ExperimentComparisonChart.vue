@@ -114,7 +114,7 @@ const initChart = () => {
         return `
           <div class="p-2">
             <div class="font-semibold">${data.name}</div>
-            <div>${availableMetrics.find(m => m.value === selectedMetric.value)?.label}: ${Number(data.value).toFixed(3)}</div>
+            <div>${availableMetrics.find(m => m.value === selectedMetric.value)?.label}: ${data.value != null ? Number(data.value).toFixed(3) : "-"}</div>
           </div>
         `;
       }
@@ -138,7 +138,7 @@ const initChart = () => {
       min: 0,
       max: selectedMetric.value === 'auc' ? 1 : 1,
       axisLabel: {
-        formatter: (value: number) => value.toFixed(2)
+        formatter: (value: number) => value != null ? value.toFixed(2) : "-"
       }
     },
     series: [

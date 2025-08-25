@@ -65,19 +65,19 @@
               <h4 class="text-lg font-semibold mb-4">Overall Metrics</h4>
               <div class="grid grid-cols-2 gap-4">
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-blue-600">{{ runSummary.metrics.auc.toFixed(3) }}</div>
+                  <div class="text-2xl font-bold text-blue-600">{{ Number(runSummary.metrics.auc).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">AUC</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-green-600">{{ runSummary.metrics.accuracy.toFixed(3) }}</div>
+                  <div class="text-2xl font-bold text-green-600">{{ Number(runSummary.metrics.accuracy).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">Accuracy</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ runSummary.metrics.f1_macro.toFixed(3) }}</div>
+                  <div class="text-2xl font-bold text-purple-600">{{ Number(runSummary.metrics.f1_macro).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">F1 Macro</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-indigo-600">{{ runSummary.metrics.f1_weighted.toFixed(3) }}</div>
+                  <div class="text-2xl font-bold text-indigo-600">{{ Number(runSummary.metrics.f1_weighted).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">F1 Weighted</div>
                 </div>
               </div>
@@ -90,15 +90,15 @@
               <h4 class="text-lg font-semibold mb-4 text-orange-600">Class 1 (Positive) Metrics</h4>
               <div class="grid grid-cols-3 gap-4">
                 <div class="text-center">
-                  <div class="text-xl font-bold text-orange-600">{{ runSummary.metrics.precision_1.toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-orange-600">{{ Number(runSummary.metrics.precision_1).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">Precision</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-xl font-bold text-orange-600">{{ runSummary.metrics.recall_1.toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-orange-600">{{ Number(runSummary.metrics.recall_1).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">Recall</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-xl font-bold text-orange-600">{{ runSummary.metrics.f1_1.toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-orange-600">{{ Number(runSummary.metrics.f1_1).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">F1</div>
                 </div>
               </div>
@@ -108,15 +108,15 @@
               <h4 class="text-lg font-semibold mb-4 text-gray-600">Class 0 (Negative) Metrics</h4>
               <div class="grid grid-cols-3 gap-4">
                 <div class="text-center">
-                  <div class="text-xl font-bold text-gray-600">{{ runSummary.metrics.precision_0.toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-gray-600">{{ Number(runSummary.metrics.precision_0).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">Precision</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-xl font-bold text-gray-600">{{ runSummary.metrics.recall_0.toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-gray-600">{{ Number(runSummary.metrics.recall_0).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">Recall</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-xl font-bold text-gray-600">{{ runSummary.metrics.f1_0.toFixed(3) }}</div>
+                  <div class="text-xl font-bold text-gray-600">{{ Number(runSummary.metrics.f1_0).toFixed(3) }}</div>
                   <div class="text-sm text-gray-600">F1</div>
                 </div>
               </div>
@@ -149,14 +149,14 @@
             <!-- Fold Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div class="card text-center">
-                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean.toFixed(3) }}</div>
+                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean != null ? Number(runFolds.stats.auc_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">AUC Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std.toFixed(3) }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std != null ? Number(runFolds.stats.auc_std).toFixed(3) : "-" }}</div>
               </div>
               <div class="card text-center">
-                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.f1_1_mean.toFixed(3) }}</div>
+                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.f1_1_mean != null ? Number(runFolds.stats.f1_1_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">F1 (y=1) Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std.toFixed(3) }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std != null ? Number(runFolds.stats.f1_1_std).toFixed(3) : "-" }}</div>
               </div>
             </div>
 
@@ -178,11 +178,11 @@
                   <tbody>
                     <tr v-for="fold in runFolds.folds" :key="fold.fold" class="border-b">
                       <td class="py-2 font-medium">{{ fold.fold }}</td>
-                      <td class="py-2 text-center">{{ fold.auc.toFixed(3) }}</td>
-                      <td class="py-2 text-center">{{ fold.accuracy.toFixed(3) }}</td>
-                      <td class="py-2 text-center">{{ fold.precision_1.toFixed(3) }}</td>
-                      <td class="py-2 text-center">{{ fold.recall_1.toFixed(3) }}</td>
-                      <td class="py-2 text-center">{{ fold.f1_1.toFixed(3) }}</td>
+                      <td class="py-2 text-center">{{ fold.auc != null ? Number(fold.auc).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ fold.accuracy != null ? Number(fold.accuracy).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ fold.precision_1 != null ? Number(fold.precision_1).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ fold.recall_1 != null ? Number(fold.recall_1).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ fold.f1_1 != null ? Number(fold.f1_1).toFixed(3) : "-" }}</td>
                     </tr>
                   </tbody>
                 </table>
