@@ -133,60 +133,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Experiments Table -->
-        <div class="card">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Experiments Details</h3>
-          <div class="overflow-x-auto">
-            <table class="min-w-full">
-              <thead>
-                <tr class="border-b">
-                  <th class="text-left py-3 px-4 font-medium text-gray-900">Code</th>
-                  <th class="text-left py-3 px-4 font-medium text-gray-900">Algorithm</th>
-                  <th class="text-left py-3 px-4 font-medium text-gray-900">FS Method</th>
-                  <th class="text-center py-3 px-4 font-medium text-gray-900">CV Splits</th>
-                  <th class="text-center py-3 px-4 font-medium text-gray-900">AUC</th>
-                  <th class="text-center py-3 px-4 font-medium text-gray-900">Precision (y=1)</th>
-                  <th class="text-center py-3 px-4 font-medium text-gray-900">Recall (y=1)</th>
-                  <th class="text-center py-3 px-4 font-medium text-gray-900">F1 (y=1)</th>
-                  <th class="text-center py-3 px-4 font-medium text-gray-900">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="experiment in experimentData?.codes" :key="experiment.code" class="border-b hover:bg-gray-50">
-                  <td class="py-3 px-4 font-medium text-gray-900">
-                    <FloatingTooltip :content="experiment.mode_desc_short" placement="top">
-                      <span class="cursor-help">{{ experiment.code }}</span>
-                    </FloatingTooltip>
-                  </td>
-                  <td class="py-3 px-4 text-gray-700">{{ experiment.algorithm }}</td>
-                  <td class="py-3 px-4 text-gray-700">{{ experiment.fs_method }}</td>
-                  <td class="py-3 px-4 text-center text-gray-700">{{ experiment.cv_splits }}</td>
-                  <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-blue-600">{{ experiment.metrics.auc != null ? Number(experiment.metrics.auc).toFixed(3) : "-" }}</span>
-                  </td>
-                  <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-green-600">{{ experiment.metrics.precision_1 != null ? Number(experiment.metrics.precision_1).toFixed(3) : "-" }}</span>
-                  </td>
-                  <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-orange-600">{{ experiment.metrics.recall_1 != null ? Number(experiment.metrics.recall_1).toFixed(3) : "-" }}</span>
-                  </td>
-                  <td class="py-3 px-4 text-center">
-                    <span class="font-medium text-purple-600">{{ experiment.metrics.f1_1 != null ? Number(experiment.metrics.f1_1).toFixed(3) : "-" }}</span>
-                  </td>
-                  <td class="py-3 px-4 text-center">
-                    <button
-                      @click="openExperimentDetail(experiment)"
-                      class="btn-primary btn-sm"
-                    >
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
       <!-- Empty State -->
