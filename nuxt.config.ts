@@ -24,6 +24,7 @@ export default defineNuxtConfig({
     dbUser: process.env.DB_USER || 'postgres',
     dbPassword: process.env.DB_PASSWORD || '123456',
     dbName: process.env.DB_NAME || 'postgres',
+    CRAWLER_PATH: process.env.CRAWLER_PATH || 'http://localhost:3000',
     
     // 公開變數（客戶端也可訪問）
     public: {

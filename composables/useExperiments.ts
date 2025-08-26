@@ -167,6 +167,7 @@ export function useFeatureAnalysis() {
       error.value = null;
       const data = await $fetch<FeatureAnalysisVisualizations>(`/api/feature-analysis/${batchId}/visualizations`);
       visualizations.value = data;
+      console.log(visualizations.value);
     } catch (err: any) {
       error.value = err.message || 'Failed to fetch visualizations';
       console.error('Error fetching visualizations:', err);

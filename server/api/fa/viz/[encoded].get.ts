@@ -1,45 +1,29 @@
 import { query } from '~/server/utils/db';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { existsSync } from 'fs';
 
 export default defineEventHandler(async (event) => {
-  const faBatchId = getRouterParam(event, 'fa_batch_id');
-  const vizType = getRouterParam(event, 'viz_type');
+  const encoded = getRouterParam(event, 'encoded');
+  const plotPath = Buffer.from(encoded || '', 'base64').toString('utf-8');
+  const config = useRuntimeConfig();
   
-  if (!faBatchId || !vizType) {
+  if (!plotPath) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'fa_batch_id and viz_type are required'
+      statusMessage: 'plot_path is required'
     });
   }
 
   try {
-    // 獲取視覺化資訊
-    const visualizationSql = `
-      SELECT plot_path
-      FROM fa_visualizations
-      WHERE analysis_id = $1 AND viz_type = $2
-    `;
-    const visualization = await query(visualizationSql, [faBatchId, vizType]);
+    const fullPath = config.CRAWLER_PATH + plotPath;
 
-    if (visualization.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Visualization not found'
-      });
-    }
-
-    const plotPath = visualization[0].plot_path;
-    if (!plotPath) {
+    if (!fullPath || !existsSync(fullPath)) {
       throw createError({
         statusCode: 404,
         statusMessage: 'Plot path not found'
       });
     }
-
-    // 構建完整的檔案路徑
-    // 假設 SVG 檔案存放在 public/visualizations 目錄下
-    const fullPath = join(process.cwd(), 'public', 'visualizations', plotPath);
 
     try {
       // 讀取 SVG 檔案
