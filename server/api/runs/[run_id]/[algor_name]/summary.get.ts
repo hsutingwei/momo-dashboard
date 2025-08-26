@@ -3,6 +3,7 @@ import type { RunSummary } from '~/types';
 
 export default defineEventHandler(async (event): Promise<RunSummary> => {
   const runId = getRouterParam(event, 'run_id');
+  const algorName = getRouterParam(event, 'algor_name');
   
   if (!runId) {
     throw createError({
@@ -37,10 +38,10 @@ export default defineEventHandler(async (event): Promise<RunSummary> => {
       LEFT JOIN ml_run_algorithms a ON a.run_id = r.run_id
       LEFT JOIN ml_run_summary s ON s.run_id = r.run_id and a.id = s.algorithm_id 
       LEFT JOIN ml_modes mm ON mm.id = r.mode_id
-      WHERE r.run_id = $1
+      WHERE r.run_id = $1 and a.algorithm like '%' || $2 || '%'
     `;
     
-    const runData = await query(runDataSql, [runId]);
+    const runData = await query(runDataSql, [runId, algorName]);
 
     if (runData.length === 0) {
       throw createError({

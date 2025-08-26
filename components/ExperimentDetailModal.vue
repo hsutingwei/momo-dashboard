@@ -340,6 +340,7 @@ interface Props {
   modelValue: boolean;
   runId?: string;
   faBatchId?: string;
+  selectedAlgorithm?: string;
 }
 
 const props = defineProps<Props>();
@@ -362,7 +363,7 @@ const tabs = [
 
 const modalTitle = computed(() => {
   if (!runSummary.value) return 'Experiment Details';
-  return `${runSummary.value.algorithm} - ${runSummary.value.run_id}`;
+  return `${props.selectedAlgorithm} - ${runSummary.value.run_id}`;
 });
 
 // Run Details
@@ -389,18 +390,18 @@ const runFoldsLoading = ref(false);
 const runFoldsError = ref<string | null>(null);
 
 const retry = () => {
-  if (props.runId) {
-    fetchRunSummary(props.runId);
+  if (props.runId && props.selectedAlgorithm) {
+    fetchRunSummary(props.runId, props.selectedAlgorithm);
   }
 };
 
 const fetchRunFolds = async () => {
-  if (!props.runId) return;
+  if (!props.runId || !props.selectedAlgorithm) return;
 
   try {
     runFoldsLoading.value = true;
     runFoldsError.value = null;
-    await fetchRunFoldsFromComposable(props.runId);
+    await fetchRunFoldsFromComposable(props.runId, props.selectedAlgorithm);
   } catch (err: any) {
     runFoldsError.value = err.message || 'Failed to fetch fold data';
   } finally {
@@ -422,9 +423,10 @@ const fetchFeatureData = async () => {
 };
 
 // Watch for runId changes
-watch(() => props.runId, (newRunId) => {
-  if (newRunId && isOpen.value) {
-    fetchRunSummary(newRunId);
+watch(() => [props.runId, props.selectedAlgorithm], ([newRunId, newAlgorName]) => {
+  if (newRunId && newAlgorName && isOpen.value) {
+    fetchRunSummary(newRunId, newAlgorName);
+    fetchRunFolds();
   }
 });
 
@@ -439,8 +441,9 @@ watch(activeTab, (newTab) => {
 
 // Watch for modal open
 watch(isOpen, (open) => {
-  if (open && props.runId) {
-    fetchRunSummary(props.runId);
+  if (open && props.runId && props.selectedAlgorithm) {
+    fetchRunSummary(props.runId, props.selectedAlgorithm);
+    fetchRunFolds();
   }
 });
 </script>

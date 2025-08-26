@@ -150,6 +150,7 @@
       v-model="showDetailModal"
       :run-id="selectedRunId"
       :fa-batch-id="faBatchId"
+      :selected-algorithm="selectedAlgorithm"
     />
   </div>
 </template>
@@ -178,6 +179,7 @@ const {
 
 const showDetailModal = ref(false);
 const selectedRunId = ref<string>('');
+const selectedAlgorithm = ref<string>('');
 
 const retry = () => {
   fetchExperimentData(faBatchId);
@@ -185,6 +187,7 @@ const retry = () => {
 
 const openExperimentDetail = (experiment: ExperimentRun) => {
   selectedRunId.value = experiment.run_id;
+  selectedAlgorithm.value = experiment.algorithm;
   showDetailModal.value = true;
 };
 

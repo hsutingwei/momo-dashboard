@@ -103,11 +103,11 @@ export function useRunDetails() {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  const fetchRunSummary = async (runId: string) => {
+  const fetchRunSummary = async (runId: string, algorName: string) => {
     try {
       loading.value = true;
       error.value = null;
-      const data = await $fetch<RunSummary>(`/api/runs/${runId}/summary`);
+      const data = await $fetch<RunSummary>(`/api/runs/${runId}/${algorName.replace('{', '').replace('}', '')}/summary`);
       runSummary.value = data;
     } catch (err: any) {
       error.value = err.message || 'Failed to fetch run summary';
@@ -117,11 +117,11 @@ export function useRunDetails() {
     }
   };
 
-  const fetchRunFolds = async (runId: string) => {
+  const fetchRunFolds = async (runId: string, algorName: string) => {
     try {
       loading.value = true;
       error.value = null;
-      const data = await $fetch<RunFolds>(`/api/runs/${runId}/folds`);
+      const data = await $fetch<RunFolds>(`/api/runs/${runId}/${algorName.replace('{', '').replace('}', '')}/folds`);
       runFolds.value = data;
     } catch (err: any) {
       error.value = err.message || 'Failed to fetch run folds';

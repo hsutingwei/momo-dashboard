@@ -3,7 +3,9 @@ import type { RunFolds } from '~/types';
 
 export default defineEventHandler(async (event): Promise<RunFolds> => {
   const runId = getRouterParam(event, 'run_id');
-  
+  const algorName = getRouterParam(event, 'algor_name');
+
+  console.log(runId, algorName);
   if (!runId) {
     throw createError({
       statusCode: 400,
@@ -15,18 +17,20 @@ export default defineEventHandler(async (event): Promise<RunFolds> => {
     // 獲取每折指標
     const foldMetricsSql = `
       SELECT 
-        fold,
-        auc,
-        accuracy,
-        precision_1,
-        recall_1,
-        f1_1
-      FROM ml_fold_metrics
-      WHERE run_id = $1
-      ORDER BY fold ASC
+        m.fold,
+        m.auc,
+        m.accuracy,
+        m.precision_1,
+        m.recall_1,
+        m.f1_1
+      FROM ml_fold_metrics m
+      left join ml_run_algorithms mra 
+        on m.algorithm_id = mra.id 
+      WHERE m.run_id = $1 and mra.algorithm like '%' || $2 || '%'
+      ORDER BY m.fold ASC
     `;
     
-    const foldMetrics = await query(foldMetricsSql, [runId]);
+    const foldMetrics = await query(foldMetricsSql, [runId, algorName]);
 
     if (foldMetrics.length === 0) {
       throw createError({
