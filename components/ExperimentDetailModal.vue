@@ -302,7 +302,7 @@
               <h4 class="text-lg font-semibold mb-4">Visualizations</h4>
               <div class="space-y-4">
                 <div v-for="viz in visualizations.visualizations" :key="viz.viz_type" class="border rounded-lg p-4">
-                  <h5 class="font-medium mb-2 capitalize">{{ viz.viz_type }} Visualization</h5>
+                  <h5 class="font-medium mb-2 capitalize">{{ viz.viz_type.toUpperCase() }} Visualization</h5>
                   <div class="flex items-center space-x-4 mb-4">
                     <span v-if="viz.separation_score" class="text-sm text-gray-600">
                       Separation Score: {{ viz.separation_score != null ? Number(viz.separation_score).toFixed(3) : "-" }}
@@ -323,11 +323,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Predictions Tab -->
-        <div v-if="activeTab === 'predictions'" class="text-center py-8">
-          <p class="text-gray-500">Predictions and Error Analysis - Coming Soon</p>
         </div>
       </div>
     </div>
@@ -363,7 +358,6 @@ const tabs = [
   { id: 'overview', name: 'Overview' },
   { id: 'cv', name: 'Cross-Validation' },
   { id: 'features', name: 'Feature Analysis' },
-  { id: 'predictions', name: 'Predictions' }
 ];
 
 const modalTitle = computed(() => {
