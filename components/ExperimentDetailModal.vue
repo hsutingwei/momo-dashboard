@@ -138,7 +138,8 @@
           <!-- Hyperparameters -->
           <div class="card">
             <h4 class="text-lg font-semibold mb-4">Hyperparameters</h4>
-            <pre class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">{{ JSON.stringify(runSummary.hyperparams, null, 2) }}</pre>
+            <pre class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">{{ JSON.stringify(runSummary.hyperparams, null, 2) }}
+  </pre>
           </div>
         </div>
 
@@ -161,24 +162,32 @@
             <!-- Fold Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div class="card text-center">
-                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean != null ? Number(runFolds.stats.auc_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-blue-600">{{ runFolds.stats.auc_mean != null ?
+                  Number(runFolds.stats.auc_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">AUC Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std != null ? Number(runFolds.stats.auc_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.auc_std != null ?
+                  Number(runFolds.stats.auc_std).toFixed(3) : "-" }}</div>
               </div>
               <div class="card text-center">
-                <div class="text-2xl font-bold text-purple-600">{{ runFolds.stats.f1_1_mean != null ? Number(runFolds.stats.f1_1_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-purple-600">{{ runFolds.stats.f1_1_mean != null ?
+                  Number(runFolds.stats.f1_1_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">F1 (y=1) Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std != null ? Number(runFolds.stats.f1_1_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.f1_1_std != null ?
+                  Number(runFolds.stats.f1_1_std).toFixed(3) : "-" }}</div>
               </div>
               <div class="card text-center">
-                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.recall_1_mean != null ? Number(runFolds.stats.recall_1_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-orange-600">{{ runFolds.stats.recall_1_mean != null ?
+                  Number(runFolds.stats.recall_1_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">Recall (y=1) Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.recall_1_std != null ? Number(runFolds.stats.recall_1_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.recall_1_std != null ?
+                  Number(runFolds.stats.recall_1_std).toFixed(3) : "-" }}</div>
               </div>
               <div class="card text-center">
-                <div class="text-2xl font-bold text-green-600">{{ runFolds.stats.prec_1_mean != null ? Number(runFolds.stats.prec_1_mean).toFixed(3) : "-" }}</div>
+                <div class="text-2xl font-bold text-green-600">{{ runFolds.stats.prec_1_mean != null ?
+                  Number(runFolds.stats.prec_1_mean).toFixed(3) : "-" }}</div>
                 <div class="text-sm text-gray-600">Precision (y=1) Mean</div>
-                <div class="text-xs text-gray-500">±{{ runFolds.stats.prec_1_std != null ? Number(runFolds.stats.prec_1_std).toFixed(3) : "-" }}</div>
+                <div class="text-xs text-gray-500">±{{ runFolds.stats.prec_1_std != null ?
+                  Number(runFolds.stats.prec_1_std).toFixed(3) : "-" }}</div>
               </div>
             </div>
 
@@ -238,11 +247,14 @@
               <h4 class="text-lg font-semibold mb-4">Data Overview</h4>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-blue-600">{{ formatNumber(featureSummary.data_overview.total_samples) }}</div>
+                  <div class="text-2xl font-bold text-blue-600">{{
+                    formatNumber(featureSummary.data_overview.total_samples) }}
+                  </div>
                   <div class="text-sm text-gray-600">Total Samples</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-green-600">{{ formatNumber(featureSummary.data_overview.y1) }}</div>
+                  <div class="text-2xl font-bold text-green-600">{{ formatNumber(featureSummary.data_overview.y1) }}
+                  </div>
                   <div class="text-sm text-gray-600">Positive (y=1)</div>
                 </div>
                 <div class="text-center">
@@ -250,7 +262,9 @@
                   <div class="text-sm text-gray-600">Negative (y=0)</div>
                 </div>
                 <div class="text-center">
-                  <div class="text-2xl font-bold text-purple-600">{{ formatNumber(featureSummary.data_overview.imbalance_ratio, 3) }}
+                  <div class="text-2xl font-bold text-purple-600">{{
+                    formatNumber(featureSummary.data_overview.imbalance_ratio,
+                    3) }}
                   </div>
                   <div class="text-sm text-gray-600">Imbalance Ratio</div>
                 </div>
@@ -277,10 +291,17 @@
                     <tr v-for="feature in featureSummary.dense_feature_stats" :key="feature.feature_name"
                       class="border-b">
                       <td class="py-2 font-medium">{{ feature.feature_name }}</td>
-                      <td class="py-2 text-center">{{ feature.cohens_d != null ? Number(feature.cohens_d).toFixed(3) : "-" }}</td>
-                      <td class="py-2 text-center">{{ feature.mutual_info != null ? Number(feature.mutual_info).toFixed(3) : "-" }}</td>
-                      <td class="py-2 text-center">{{ feature.p_value != null ? Number(feature.p_value).toExponential(2) : "-" }}</td>
-                      <td class="py-2 text-center">{{ feature.overlap_coefficient != null ? Number(feature.overlap_coefficient).toFixed(3) : "-" }}</td>
+                      <td class="py-2 text-center">{{ feature.cohens_d != null ? Number(feature.cohens_d).toFixed(3) :
+                        "-" }}
+                      </td>
+                      <td class="py-2 text-center">{{ feature.mutual_info != null ?
+                        Number(feature.mutual_info).toFixed(3) : "-"
+                        }}</td>
+                      <td class="py-2 text-center">{{ feature.p_value != null ? Number(feature.p_value).toExponential(2)
+                        : "-"
+                        }}</td>
+                      <td class="py-2 text-center">{{ feature.overlap_coefficient != null ?
+                        Number(feature.overlap_coefficient).toFixed(3) : "-" }}</td>
                       <td class="py-2 text-center">
                         <span :class="feature.is_significant ? 'text-green-600' : 'text-red-600'">
                           {{ feature.is_significant ? 'Yes' : 'No' }}
@@ -293,6 +314,18 @@
                       </td>
                     </tr>
                   </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="7" class="text-sm text-gray-600 p-4">
+                        <strong>Cohen's d:</strong> |d|<0.2 極小差異，0.2–0.5 小差異，0.5–0.8 中等差異，>0.8 大差異。<br />
+                        <strong>Mutual Info:</strong> 越大越有用，無固定閾值，需相對比較。<br />
+                        <strong>P-value:</strong><0.05 為顯著差異，越小越顯著。<br />
+                        <strong>Overlap:</strong> 0=無重疊，1=完全重疊，理想值越接近0越好。<br />
+                        <strong>Significant:</strong> p-value< 0.05 時顯示 Yes。<br />
+                        <strong>High Separation:</strong> Cohen’s d > 0.5 時顯示 Yes。
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
             </div>
@@ -305,13 +338,16 @@
                   <h5 class="font-medium mb-2 capitalize">{{ viz.viz_type.toUpperCase() }} Visualization</h5>
                   <div class="flex items-center space-x-4 mb-4">
                     <span v-if="viz.separation_score" class="text-sm text-gray-600">
-                      Separation Score: {{ viz.separation_score != null ? Number(viz.separation_score).toFixed(3) : "-" }}
+                      Separation Score: {{ viz.separation_score != null ? Number(viz.separation_score).toFixed(3) : "-"
+                      }}
                     </span>
                     <span v-if="viz.explained_var_1" class="text-sm text-gray-600">
-                      Explained Var 1: {{ viz.explained_var_1 != null ? Number(viz.explained_var_1 * 100).toFixed(1) : "-" }}%
+                      Explained Var 1: {{ viz.explained_var_1 != null ? Number(viz.explained_var_1 * 100).toFixed(1) :
+                      "-" }}%
                     </span>
                     <span v-if="viz.explained_var_2" class="text-sm text-gray-600">
-                      Explained Var 2: {{ viz.explained_var_2 != null ? Number(viz.explained_var_2 * 100).toFixed(1) : "-" }}%
+                      Explained Var 2: {{ viz.explained_var_2 != null ? Number(viz.explained_var_2 * 100).toFixed(1) :
+                      "-" }}%
                     </span>
                   </div>
                   <div class="flex justify-center">
