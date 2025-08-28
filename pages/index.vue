@@ -154,7 +154,7 @@
         </div>
 
 
-        <Collapsible title="TF-IDF" :default-open="false" class="card mb-6">
+        <!-- <Collapsible title="TF-IDF" :default-open="false" class="card mb-6">
           <template #icon>
             <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,7 +162,10 @@
             </svg>
           </template>
           <TfidfWordCloud />
-        </Collapsible>
+        </Collapsible> -->
+        <div class="card mb-6">
+          <TfidfWordCloud />
+        </div>
 
         <!-- Status Card -->
         <div class="card mb-6">
