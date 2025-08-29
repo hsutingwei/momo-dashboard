@@ -14,19 +14,23 @@ export function useExperiments() {
   const experimentData = ref<ExperimentBatch | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
+  
+  // 批次列表相關狀態
+  const batchesLoading = ref(false);
+  const batchesError = ref<string | null>(null);
 
   // 獲取所有批次
   const fetchBatches = async () => {
     try {
-      loading.value = true;
-      error.value = null;
+      batchesLoading.value = true;
+      batchesError.value = null;
       const data = await $fetch<AnalysisBatch[]>('/api/experiments/batches');
       batches.value = data;
     } catch (err: any) {
-      error.value = err.message || 'Failed to fetch batches';
+      batchesError.value = err.message || 'Failed to fetch batches';
       console.error('Error fetching batches:', err);
     } finally {
-      loading.value = false;
+      batchesLoading.value = false;
     }
   };
 
@@ -82,6 +86,8 @@ export function useExperiments() {
     experimentData,
     loading,
     error,
+    batchesLoading,
+    batchesError,
     
     // 計算屬性
     selectedBatchInfo,

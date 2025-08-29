@@ -6,27 +6,54 @@
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-3xl font-bold text-gray-900">ML Experiment Dashboard</h1>
-            <p class="text-gray-600 mt-2">Compare machine learning experiments and analyze model performance</p>
+            <p class="text-gray-600 mt-2">
+              Compare machine learning experiments and analyze model performance
+              <span v-if="selectedBatchInfo" class="text-blue-600 font-medium">
+                • {{ selectedBatchInfo.name }}
+              </span>
+            </p>
           </div>
-          <NuxtLink to="/" class="btn-secondary">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Back to Dashboard
-          </NuxtLink>
+          <div class="flex items-center space-x-4">
+            <!-- Batch Selection Dropdown -->
+            <div class="relative">
+              <label for="batch-select" class="block text-sm font-medium text-gray-700 mb-1">Select Batch</label>
+              <select
+                id="batch-select"
+                v-model="selectedBatchId"
+                @change="onBatchChange"
+                class="block w-64 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white"
+                :disabled="batchesLoading"
+              >
+                <option v-if="batchesLoading" value="">Loading...</option>
+                <option v-else-if="batchesError" value="">Loading failed</option>
+                <option v-else-if="batches.length === 0" value="">No available batches</option>
+                <option v-else value="">Please select a batch</option>
+                <option
+                  v-for="batch in batches"
+                  :key="batch.id"
+                  :value="batch.id"
+                  class="py-2"
+                >
+                  {{ batch.name }} - {{ batch.experiment_count }} experiments - Best AUC: {{ batch.best_auc.toFixed(3) }} ({{ batch.date }})
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Loading State -->
-      <div v-if="loading" class="text-center py-16">
+      <div v-if="loading || batchesLoading" class="text-center py-16">
         <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-gray-600">Loading experiment data...</p>
+        <p class="text-gray-600">
+          {{ batchesLoading ? 'Loading batches...' : 'Loading experiment data...' }}
+        </p>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" class="bg-red-50 border border-red-200 p-6 rounded-lg mb-6">
+      <div v-else-if="error || batchesError" class="bg-red-50 border border-red-200 p-6 rounded-lg mb-6">
         <h3 class="text-red-800 font-semibold mb-3">Error Loading Data</h3>
-        <p class="text-gray-600 mb-4">{{ error }}</p>
+        <p class="text-gray-600 mb-4">{{ batchesError || error }}</p>
         <button @click="retry" class="btn-danger">Retry</button>
       </div>
 
@@ -156,14 +183,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useExperiments } from '~/composables/useExperiments';
-import type { ExperimentRun } from '~/types';
+import type { ExperimentRun, AnalysisBatch } from '~/types';
 import ExperimentDetailModal from '~/components/ExperimentDetailModal.vue';
 import ExperimentComparisonChart from '~/components/charts/ExperimentComparisonChart.vue';
 import FloatingTooltip from '~/components/ui/FloatingTooltip.vue';
 
 const route = useRoute();
+const router = useRouter();
 const faBatchId = route.params.fa_batch_id as string;
 
 const {
@@ -174,15 +202,25 @@ const {
   bestAUC,
   bestPrecision,
   bestF1,
-  fetchExperimentData
+  fetchExperimentData,
+  batches,
+  batchesLoading,
+  batchesError,
+  fetchBatches,
+  selectedBatchInfo
 } = useExperiments();
 
 const showDetailModal = ref(false);
 const selectedRunId = ref<string>('');
 const selectedAlgorithm = ref<string>('');
+const selectedBatchId = ref<string>('');
 
 const retry = () => {
-  fetchExperimentData(faBatchId);
+  if (batchesError.value) {
+    fetchBatches();
+  } else if (error.value) {
+    fetchExperimentData(faBatchId);
+  }
 };
 
 const openExperimentDetail = (experiment: ExperimentRun) => {
@@ -191,9 +229,37 @@ const openExperimentDetail = (experiment: ExperimentRun) => {
   showDetailModal.value = true;
 };
 
-onMounted(() => {
+// 處理批次切換
+const onBatchChange = () => {
+  if (selectedBatchId.value && selectedBatchId.value !== faBatchId) {
+    // 導航到新的批次頁面
+    router.push(`/experiments/${selectedBatchId.value}`);
+  }
+};
+
+// 監聽路由變化，更新選中的批次
+watch(() => route.params.fa_batch_id, (newBatchId) => {
+  if (newBatchId && typeof newBatchId === 'string') {
+    selectedBatchId.value = newBatchId;
+    fetchExperimentData(newBatchId);
+  }
+}, { immediate: true });
+
+onMounted(async () => {
+  // 獲取批次列表
+  await fetchBatches();
+  
+  // 設置當前選中的批次
   if (faBatchId) {
+    selectedBatchId.value = faBatchId;
     fetchExperimentData(faBatchId);
+  } else if (batches.value.length > 0) {
+    // 如果沒有指定批次ID，預設選擇最新的批次
+    const latestBatch = batches.value[0]; // 假設批次按日期排序，最新的在前面
+    if (latestBatch) {
+      selectedBatchId.value = latestBatch.id;
+      router.push(`/experiments/${latestBatch.id}`);
+    }
   }
 });
 </script>

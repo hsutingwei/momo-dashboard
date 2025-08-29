@@ -40,7 +40,7 @@
                 </path>
               </svg>
             </template>
-            <span class="text-gray-600">{{ runSummary.mode_desc_long }}</span>
+            <span class="text-gray-600" v-html="runSummary.mode_desc_long"></span>
           </Collapsible>
           <!-- Run Summary -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
