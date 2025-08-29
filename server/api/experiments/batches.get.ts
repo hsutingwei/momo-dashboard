@@ -53,7 +53,7 @@ export default defineEventHandler(async (event): Promise<AnalysisBatch[]> => {
 
         return {
           id: batch.analysis_id,
-          name: `${batch.mode_code} Analysis`,
+          name: `${batch.analysis_id} Analysis`,
           date: batch.analysis_timestamp.toISOString().split('T')[0],
           experiment_count: relatedRuns.length,
           best_auc: aucs.length > 0 ? Math.max(...aucs) : 0,
